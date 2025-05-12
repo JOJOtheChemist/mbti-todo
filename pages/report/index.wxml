@@ -1,0 +1,26 @@
+<view class="container">
+  <view class="header">
+    <view class="title">您的MBTI性格类型</view>
+  </view>
+  
+  <view class="result-card">
+    <view class="mbti-type">{{mbtiResult}}</view>
+    <view class="mbti-description">{{mbtiDescription}}</view>
+  </view>
+  
+  <view class="task-section">
+    <view class="section-title">推荐的7天成长任务</view>
+    
+    <view class="task-list">
+      <view class="task-item" wx:for="{{mbtiTasks}}" wx:key="index">
+        <view class="task-title">{{item.title}}</view>
+        <view class="task-reason">为什么：{{item.reason}}</view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="action-buttons">
+    <button class="start-btn" bindtap="startTraining">开始7天成长训练</button>
+    <button class="retest-btn" bindtap="retakeTest">重新测试</button>
+  </view>
+</view> 

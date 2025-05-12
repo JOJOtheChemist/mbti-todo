@@ -1,0 +1,23 @@
+<view class="container">
+  <view class="progress-bar">
+    <view 
+      wx:for="{{steps}}" 
+      wx:key="index" 
+      class="progress-step {{currentStep >= index ? 'active' : ''}}"
+    ></view>
+  </view>
+  
+  <view class="content">
+    <view class="title">{{steps[currentStep].title}}</view>
+    <view class="description">{{steps[currentStep].desc}}</view>
+    
+    <view class="step-image">
+      <!-- 可以放对应步骤的图片 -->
+    </view>
+    
+    <view class="button-area">
+      <button wx:if="{{currentStep < steps.length - 1}}" class="next-btn" bindtap="nextStep">下一步</button>
+      <button wx:else class="start-btn" bindtap="startTest">开始测试</button>
+    </view>
+  </view>
+</view> 

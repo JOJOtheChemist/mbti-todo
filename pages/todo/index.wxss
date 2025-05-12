@@ -1,0 +1,525 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 40rpx;
+  box-sizing: border-box;
+  background-color: #F9F9F9;
+}
+
+.header {
+  margin-top: 40rpx;
+  margin-bottom: 40rpx;
+}
+
+.mbti-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.mbti-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.mbti-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #6E7BF2;
+  margin-right: 20rpx;
+}
+
+.retest-btn {
+  font-size: 24rpx;
+  color: #6E7BF2;
+  padding: 4rpx 12rpx;
+  border: 2rpx solid #6E7BF2;
+  border-radius: 16rpx;
+}
+
+/* 新增：数据统计卡片样式 */
+.statistics-card {
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.stat-item {
+  flex: 1;
+  min-width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #6E7BF2;
+  margin-bottom: 6rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.stats-more {
+  position: absolute;
+  right: 30rpx;
+  bottom: 20rpx;
+  font-size: 24rpx;
+  color: #6E7BF2;
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  margin-left: 8rpx;
+}
+
+/* 修改：日期导航容器 */
+.days-nav-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.day-arrow {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6E7BF2;
+  font-size: 32rpx;
+}
+
+.day-arrow.disabled {
+  color: #CCC;
+}
+
+.arrow-icon {
+  font-weight: bold;
+}
+
+.days-nav {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin: 0 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.day-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80rpx;
+}
+
+.day-text {
+  font-size: 24rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.day-item.active .day-text {
+  color: #6E7BF2;
+  font-weight: bold;
+}
+
+.day-item.disabled .day-text {
+  color: #CCC;
+}
+
+.day-indicator {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background-color: #E0E0E0;
+}
+
+.day-item.active .day-indicator {
+  background-color: #6E7BF2;
+}
+
+.day-indicator.completed {
+  background-color: #4CAF50;
+}
+
+.tasks-container {
+  flex: 1;
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 40rpx;
+}
+
+.day-header {
+  margin-bottom: 30rpx;
+}
+
+.day-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 30rpx 0;
+  border-bottom: 2rpx solid #F0F0F0;
+  position: relative;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-content {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.task-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.task-reason {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+/* 新增：打卡内容预览 */
+.checkin-preview {
+  margin-top: 20rpx;
+  background-color: #F9F9F9;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 10rpx;
+}
+
+.preview-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.preview-image {
+  width: 100%;
+  height: 200rpx;
+  border-radius: 8rpx;
+  object-fit: cover;
+}
+
+.audio-preview {
+  display: flex;
+  align-items: center;
+}
+
+.audio-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.audio-text {
+  font-size: 28rpx;
+  color: #666;
+  flex: 1;
+}
+
+.play-btn {
+  font-size: 24rpx;
+  color: #6E7BF2;
+  padding: 8rpx 20rpx;
+  border: 2rpx solid #6E7BF2;
+  border-radius: 20rpx;
+}
+
+/* 修改：打卡按钮区域 */
+.checkin-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-btn {
+  width: 120rpx;
+  height: 60rpx;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10rpx;
+}
+
+.text-btn {
+  background-color: #6E7BF2;
+}
+
+.image-btn {
+  background-color: #4CAF50;
+}
+
+.audio-btn {
+  background-color: #FF6B6B;
+}
+
+.action-icon {
+  font-size: 24rpx;
+  color: white;
+  margin-bottom: 4rpx;
+}
+
+.action-label {
+  font-size: 20rpx;
+  color: white;
+}
+
+.completed-tag, .locked-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  position: absolute;
+  top: 30rpx;
+  right: 0;
+}
+
+.completed-tag {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.locked-tag {
+  background-color: #E0E0E0;
+  color: #999;
+}
+
+/* 新增：报告按钮区域 */
+.report-button-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.view-report-btn, .next-week-btn {
+  width: 80%;
+  height: 90rpx;
+  font-size: 32rpx;
+  color: white;
+  border-radius: 45rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20rpx;
+}
+
+.view-report-btn {
+  background-color: #6E7BF2;
+}
+
+.next-week-btn {
+  background-color: #FF9500;
+}
+
+/* 打卡模态框 */
+.checkin-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.checkin-modal.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  width: 90%;
+  max-height: 80%;
+  background-color: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2rpx solid #F0F0F0;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  font-size: 48rpx;
+  color: #999;
+}
+
+.modal-body {
+  padding: 40rpx;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.task-info {
+  margin-bottom: 30rpx;
+}
+
+.task-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.checkin-form {
+  margin-bottom: 30rpx;
+}
+
+.text-input {
+  width: 100%;
+  height: 300rpx;
+  padding: 20rpx;
+  border: 2rpx solid #E0E0E0;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.image-upload {
+  width: 100%;
+  height: 400rpx;
+  border: 2rpx dashed #E0E0E0;
+  border-radius: 10rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+}
+
+.upload-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-icon {
+  font-size: 60rpx;
+  color: #CCC;
+  margin-bottom: 20rpx;
+}
+
+.upload-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.audio-record {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.record-btn {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background-color: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.record-icon {
+  font-size: 60rpx;
+  margin-bottom: 10rpx;
+}
+
+.record-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.record-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.preview-text {
+  font-size: 28rpx;
+  color: #4CAF50;
+  margin-bottom: 20rpx;
+}
+
+.rerecord-btn {
+  font-size: 28rpx;
+  color: #6E7BF2;
+  padding: 12rpx 30rpx;
+  border: 2rpx solid #6E7BF2;
+  border-radius: 30rpx;
+}
+
+.modal-footer {
+  padding: 30rpx 40rpx;
+  border-top: 2rpx solid #F0F0F0;
+}
+
+.submit-btn {
+  background-color: #6E7BF2;
+  color: white;
+  font-size: 32rpx;
+  height: 90rpx;
+  border-radius: 45rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} 

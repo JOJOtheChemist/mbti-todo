@@ -1,0 +1,29 @@
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="previousQuestion" wx:if="{{currentQuestion > 0}}">
+      <text class="icon">←</text>
+    </view>
+    <view class="progress-container">
+      <progress percent="{{progress}}" stroke-width="4" activeColor="#6E7BF2" backgroundColor="#E0E0E0" />
+      <text class="progress-text">{{currentQuestion + 1}}/{{questions.length}}</text>
+    </view>
+  </view>
+  
+  <view class="content">
+    <view class="question">
+      {{questions[currentQuestion].question}}
+    </view>
+    
+    <view class="options">
+      <view 
+        wx:for="{{questions[currentQuestion].options}}" 
+        wx:key="value"
+        class="option-item {{answers[currentQuestion] === item.value ? 'selected' : ''}}"
+        bindtap="selectOption"
+        data-value="{{item.value}}"
+      >
+        <text>{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+</view> 
