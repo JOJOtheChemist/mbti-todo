@@ -18,6 +18,7 @@ Page({
       audio: "00:30"
     },
     touchStartX: 0, // 记录触摸开始位置
+    isRecording: false, // 是否正在录音
     // 预设7天的任务
     presetTasks: [
       // 第1天任务
@@ -168,6 +169,7 @@ Page({
         }
       ]
     ],
+    allDayTasks: [], // 存储所有天的任务
     checkinRecords: {}  // 存储各任务的打卡记录，按时间顺序保存
   },
 
@@ -216,6 +218,7 @@ Page({
           currentDay,
           expandedDay: currentDay,
           dayTasks: allTasks[currentDay - 1],
+          allDayTasks: allTasks,
           daysCompleted,
           checkinRecords
         });
@@ -230,7 +233,8 @@ Page({
           startDate: now,
           currentDay,
           expandedDay: currentDay,
-          dayTasks: this.data.presetTasks[0]
+          dayTasks: this.data.presetTasks[0],
+          allDayTasks: this.data.presetTasks
         });
       }
     });
@@ -250,10 +254,10 @@ Page({
     
     // 判断是否是左右滑动（大于50px视为有效滑动）
     if (Math.abs(diff) > 50) {
-      if (diff > 0) {
+      if (diff > 0 && this.data.expandedDay > 1) {
         // 向右滑动，显示前一天
         this.navigatePrevDay();
-      } else {
+      } else if (diff < 0 && this.data.expandedDay < 7) {
         // 向左滑动，显示后一天
         this.navigateNextDay();
       }
@@ -321,18 +325,28 @@ Page({
 
   // 判断天数是否已解锁（当前天数可以查看未来两天，但状态为灰色）
   isDayUnlocked(day) {
+    // 确保第1天始终解锁
+    if (day === 1) return true;
     const { currentDay } = this.data;
     return day <= currentDay;
   },
   
   // 获取天数状态文本
   getDayStatusText(day) {
+    // 确保第1天显示为"已解锁"
+    if (day === 1) return "今日任务";
     const { currentDay } = this.data;
     if (day <= currentDay) {
       return "今日任务";
     } else {
       return "未解锁";
     }
+  },
+
+  // 获取指定日期的数据
+  getDayData(day) {
+    if (day < 1 || day > 7) return null;
+    return this.data.allDayTasks[day - 1] || [];
   },
   
   // 查看前一天
@@ -342,7 +356,7 @@ Page({
       
       this.setData({
         expandedDay,
-        dayTasks: this.data.presetTasks[expandedDay - 1]
+        dayTasks: this.data.allDayTasks[expandedDay - 1]
       });
     }
   },
@@ -355,7 +369,7 @@ Page({
       
       this.setData({
         expandedDay: newDay,
-        dayTasks: this.data.presetTasks[newDay - 1]
+        dayTasks: this.data.allDayTasks[newDay - 1]
       });
     }
   },
@@ -367,7 +381,7 @@ Page({
     
     this.setData({
       expandedDay,
-      dayTasks: this.data.presetTasks[expandedDay - 1]
+      dayTasks: this.data.allDayTasks[expandedDay - 1]
     });
   },
   
@@ -390,7 +404,7 @@ Page({
   // 添加打卡记录
   addCheckinRecord(task, method) {
     const { expandedDay } = this.data;
-    if (!this.isDayUnlocked(expandedDay)) {
+    if (!this.isDayUnlocked(expandedDay) && expandedDay !== 1) {
       wx.showToast({
         title: '当前日期未解锁，无法打卡',
         icon: 'none'
@@ -460,6 +474,10 @@ Page({
         icon: 'none',
         duration: 60000
       });
+      
+      this.setData({
+        isRecording: true
+      });
     });
     
     const options = {
@@ -485,7 +503,8 @@ Page({
       recorderManager.onStop((res) => {
         wx.hideToast();
         this.setData({
-          checkinContent: res.tempFilePath
+          checkinContent: res.tempFilePath,
+          isRecording: false
         });
       });
       

@@ -55,76 +55,93 @@
     </view>
   </view>
   
-  <!-- 滑动容器 -->
-  <view class="tasks-container" bindtouchstart="handleTouchStart" bindtouchend="handleTouchEnd">
-    <view class="day-header">
-      <text class="day-title">第{{expandedDay}}天任务</text>
-      <text class="day-status {{!isDayUnlocked(expandedDay) ? 'locked-status' : ''}}">
-        {{getDayStatusText(expandedDay)}}
-      </text>
-    </view>
-    
-    <view class="task-list">
-      <view 
-        wx:for="{{dayTasks}}" 
-        wx:key="title"
-        class="task-item {{isTaskCompleted(expandedDay, item.title) ? 'completed' : ''}} {{!isDayUnlocked(expandedDay) ? 'locked-mode' : ''}}"
-      >
-        <view class="task-content">
-          <view class="task-header">
-            <view class="task-title">{{item.title}}</view>
-            <view class="task-category">{{item.type}} · {{item.difficulty}}</view>
-          </view>
-          <view class="task-reason">为什么：{{item.reason}}</view>
-          
-          <!-- 任务打卡记录列表 -->
-          <view class="records-list" wx:if="{{getTaskCheckinRecords(expandedDay, item.title).length > 0 && isDayUnlocked(expandedDay)}}">
-            <view 
-              wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
-              wx:for-item="record"
-              wx:key="timestamp"
-              class="record-item record-{{record.method}}"
-            >
-              <view class="record-time">{{record.timeFormatted}}</view>
-              <view class="record-content">
-                <text wx:if="{{record.method === 'text'}}" class="record-text">{{record.content}}</text>
-                <image wx:elif="{{record.method === 'image'}}" class="record-image" src="{{record.content}}" mode="aspectFill"></image>
-                <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio="{{record.content}}">
-                  <text class="audio-icon">🔊</text>
-                  <text class="audio-text">播放</text>
+  <!-- 滑动容器 - 绑定触摸事件 -->
+  <view 
+    class="tasks-container" 
+    bindtouchstart="handleTouchStart"
+    bindtouchend="handleTouchEnd"
+  >
+    <!-- 水平滑动视图 -->
+    <view class="days-slider">
+      <!-- 当前日显示 -->
+      <view class="day-content">
+        <view class="day-header">
+          <text class="day-title">第{{expandedDay}}天任务</text>
+          <text class="day-status {{!isDayUnlocked(expandedDay) ? 'locked-status' : ''}}">
+            {{getDayStatusText(expandedDay)}}
+          </text>
+        </view>
+        
+        <view class="task-list">
+          <view 
+            wx:for="{{dayTasks}}" 
+            wx:key="title"
+            class="task-item {{isTaskCompleted(expandedDay, item.title) ? 'completed' : ''}} {{(!isDayUnlocked(expandedDay) && expandedDay !== 1) ? 'locked-mode' : ''}}"
+          >
+            <view class="task-content">
+              <view class="task-header">
+                <view class="task-title">{{item.title}}</view>
+                <view class="task-category">{{item.type}} · {{item.difficulty}}</view>
+              </view>
+              <view class="task-reason">为什么：{{item.reason}}</view>
+              
+              <!-- 打卡按钮区域 - 三个圆角矩形按钮 -->
+              <view class="quick-checkin-btns" wx:if="{{isDayUnlocked(expandedDay) || expandedDay === 1}}">
+                <view class="checkin-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
+                  <text class="btn-label">文字打卡</text>
+                </view>
+                <view class="checkin-btn image-btn" bindtap="openImageCheckin" data-task="{{item}}">
+                  <text class="btn-label">图片打卡</text>
+                </view>
+                <view class="checkin-btn audio-btn {{isRecording ? 'recording' : ''}}" bindtap="openAudioCheckin" data-task="{{item}}">
+                  <text class="btn-label">语音打卡</text>
                 </view>
               </view>
+              
+              <!-- 任务打卡记录列表 -->
+              <view class="records-list" wx:if="{{getTaskCheckinRecords(expandedDay, item.title).length > 0 && isDayUnlocked(expandedDay)}}">
+                <view 
+                  wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
+                  wx:for-item="record"
+                  wx:key="timestamp"
+                  class="record-item record-{{record.method}}"
+                >
+                  <view class="record-time">{{record.timeFormatted}}</view>
+                  <view class="record-content">
+                    <text wx:if="{{record.method === 'text'}}" class="record-text">{{record.content}}</text>
+                    <image wx:elif="{{record.method === 'image'}}" class="record-image" src="{{record.content}}" mode="aspectFill"></image>
+                    <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio="{{record.content}}">
+                      <text class="audio-icon">🔊</text>
+                      <text class="audio-text">播放</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 未解锁状态提示 -->
+              <view class="locked-hint" wx:if="{{!isDayUnlocked(expandedDay) && expandedDay !== 1}}">
+                <!-- 未解锁状态下的打卡容器 -->
+                <view class="locked-checkin-btns">
+                  <view class="locked-checkin-btn" bindtap="openTextCheckin" data-task="{{item}}">
+                    <text>文字打卡</text>
+                  </view>
+                  <view class="locked-checkin-btn" bindtap="openImageCheckin" data-task="{{item}}">
+                    <text>图片打卡</text>
+                  </view>
+                  <view class="locked-checkin-btn" bindtap="openAudioCheckin" data-task="{{item}}">
+                    <text>语音打卡</text>
+                  </view>
+                </view>
+                <text class="locked-text">未解锁</text>
+              </view>
             </view>
-          </view>
-          
-          <!-- 未解锁状态提示 -->
-          <view class="locked-hint" wx:if="{{!isDayUnlocked(expandedDay)}}">
-            <text class="locked-text">未解锁</text>
-          </view>
-        </view>
-        
-        <!-- 打卡按钮区域 -->
-        <view class="checkin-actions" wx:if="{{isDayUnlocked(expandedDay)}}">
-          <view class="action-row">
-            <view class="action-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
-              <text class="action-icon">T</text>
-              <text class="action-label">添加文字</text>
+            
+            <!-- 已完成标志 -->
+            <view class="completion-status">
+              <view class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title) && isDayUnlocked(expandedDay)}}">
+                <text>已完成</text>
+              </view>
             </view>
-            <view class="action-btn image-btn" bindtap="openImageCheckin" data-task="{{item}}">
-              <text class="action-icon">🖼️</text>
-              <text class="action-label">添加图片</text>
-            </view>
-            <view class="action-btn audio-btn" bindtap="openAudioCheckin" data-task="{{item}}">
-              <text class="action-icon">🎤</text>
-              <text class="action-label">添加语音</text>
-            </view>
-          </view>
-        </view>
-        
-        <!-- 已完成标志 -->
-        <view class="completion-status">
-          <view class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title) && isDayUnlocked(expandedDay)}}">
-            <text>已完成</text>
           </view>
         </view>
       </view>
@@ -174,9 +191,9 @@
         <!-- 录音打卡 -->
         <view class="checkin-form" wx:if="{{activeCheckinMethod === 'audio'}}">
           <view class="audio-record">
-            <view wx:if="{{!checkinContent}}" class="record-btn" bindtouchstart="startRecording" bindtouchend="stopRecording">
+            <view wx:if="{{!checkinContent}}" class="record-btn {{isRecording ? 'recording' : ''}}" bindtouchstart="startRecording" bindtouchend="stopRecording">
               <text class="record-icon">🎤</text>
-              <text class="record-text">按住录音</text>
+              <text class="record-text">{{isRecording ? '松开结束' : '按住录音'}}</text>
             </view>
             <view wx:else class="record-preview">
               <text class="preview-text">录音已完成</text>
