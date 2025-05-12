@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "history-container": "../history-container/history-container",
+    "checkin-buttons": "../checkin-buttons/checkin-buttons"
+  }
+} 

@@ -1,0 +1,55 @@
+<view class="unified-history-container">
+  <view class="history-title">{{title || '打卡历史记录'}}</view>
+  
+  <view class="unified-history-list">
+    <!-- 所有记录按时间混排显示 -->
+    <block wx:if="{{hasRecords}}">
+      <block wx:for="{{sortedRecords}}" wx:key="timestamp">
+        <view class="unified-history-item {{item.type}}-type">
+          <view class="history-header">
+            <view class="history-info">
+              <text class="history-type">{{item.type === 'text' ? '文字' : item.type === 'image' ? '图片' : '语音'}}</text>
+              <text class="history-index">#{{item.index}}</text>
+            </view>
+            <text class="history-time">{{item.timeFormatted || item.time}}</text>
+          </view>
+          <view class="history-content">
+            <!-- 根据记录类型显示不同内容 -->
+            <block wx:if="{{item.type === 'text'}}">
+              <text class="history-text">{{item.content || item.displayContent}}</text>
+            </block>
+            
+            <block wx:elif="{{item.type === 'image'}}">
+              <image 
+                class="history-image" 
+                src="{{item.content || item.displayContent || item.imgSrc}}" 
+                mode="aspectFill" 
+                bindtap="onImageTap" 
+                data-src="{{item.content || item.displayContent || item.imgSrc}}"
+              ></image>
+              <view class="image-hint">点击查看大图</view>
+            </block>
+            
+            <block wx:elif="{{item.type === 'audio'}}">
+              <view 
+                class="audio-player-history {{currentPlayingAudio === (item.content || item.displayContent || item.audioSrc) ? 'playing' : ''}}" 
+                bindtap="onAudioTap" 
+                data-src="{{item.content || item.displayContent || item.audioSrc}}"
+                data-duration="{{item.duration}}"
+              >
+                <view class="audio-icon">🔊</view>
+                <view class="audio-duration">{{item.duration || '00:15'}}</view>
+                <view class="audio-status">{{currentPlayingAudio === (item.content || item.displayContent || item.audioSrc) ? '播放中...' : '点击播放'}}</view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+    </block>
+    
+    <!-- 没有记录时显示提示 -->
+    <view wx:else class="no-records">
+      <text>{{emptyText || '暂无打卡记录'}}</text>
+    </view>
+  </view>
+</view> 

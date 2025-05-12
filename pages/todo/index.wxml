@@ -99,10 +99,26 @@
                   />
                 </block>
                 
-                <!-- 任务2和任务3（显示空容器） -->
-                <block wx:if="{{index === 1 || index === 2}}">
+                <!-- 任务2（显示任务2的历史记录） -->
+                <block wx:if="{{index === 1}}">
                   <history-container 
                     title="打卡历史记录"
+                    mixedRecords="{{task2History}}"
+                    currentPlayingAudio="{{currentPlayingAudio}}"
+                    bind:imagePreview="previewImage"
+                    bind:audioPlay="playAudio"
+                    emptyText="暂无打卡记录"
+                  />
+                </block>
+                
+                <!-- 任务3（显示任务3的历史记录） -->
+                <block wx:if="{{index === 2}}">
+                  <history-container 
+                    title="打卡历史记录"
+                    mixedRecords="{{task3History}}"
+                    currentPlayingAudio="{{currentPlayingAudio}}"
+                    bind:imagePreview="previewImage"
+                    bind:audioPlay="playAudio"
                     emptyText="暂无打卡记录"
                   />
                 </block>

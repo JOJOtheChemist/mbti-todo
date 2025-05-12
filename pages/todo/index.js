@@ -23,6 +23,10 @@ Page({
     imageInputHistory: [], // 存储所有图片打卡历史
     audioInputHistory: [], // 存储所有语音打卡历史
     combinedHistory: [], // 新增：存储混合排序的所有类型打卡历史
+    // 添加任务2的历史记录数组
+    task2History: [],
+    // 添加任务3的历史记录数组
+    task3History: [],
     currentPlayingAudio: '', // 当前正在播放的语音
     // 预设7天的任务
     presetTasks: [
@@ -248,6 +252,28 @@ Page({
           console.error('读取语音历史记录失败', e);
         }
         
+        // 读取任务2历史记录
+        let task2History = [];
+        try {
+          const task2HistoryData = wx.getStorageSync('task2History');
+          if (task2HistoryData) {
+            task2History = JSON.parse(task2HistoryData);
+          }
+        } catch (e) {
+          console.error('读取任务2历史记录失败', e);
+        }
+        
+        // 读取任务3历史记录
+        let task3History = [];
+        try {
+          const task3HistoryData = wx.getStorageSync('task3History');
+          if (task3HistoryData) {
+            task3History = JSON.parse(task3HistoryData);
+          }
+        } catch (e) {
+          console.error('读取任务3历史记录失败', e);
+        }
+        
         // 合并所有历史记录并按时间排序
         const combinedHistory = this.getCombinedHistory(textInputHistory, imageInputHistory, audioInputHistory);
         
@@ -265,6 +291,8 @@ Page({
           textInputHistory,
           imageInputHistory,
           audioInputHistory,
+          task2History,
+          task3History,
           combinedHistory
         });
       },
@@ -280,7 +308,9 @@ Page({
           expandedDay: currentDay,
           dayTasks: this.data.presetTasks[0],
           allDayTasks: this.data.presetTasks,
-          combinedHistory: [] // 初始化空的合并历史
+          combinedHistory: [], // 初始化空的合并历史
+          task2History: [], // 初始化任务2历史
+          task3History: [] // 初始化任务3历史
         });
       }
     });
@@ -716,53 +746,112 @@ Page({
     let textInputHistory = this.data.textInputHistory || [];
     let imageInputHistory = this.data.imageInputHistory || [];
     let audioInputHistory = this.data.audioInputHistory || [];
+    let task2History = this.data.task2History || [];
+    let task3History = this.data.task3History || [];
     
-    if (expandedDay === 1 && this.data.dayTasks[0]?.title === activeTask.title) {
-      // 根据打卡方式，添加到对应的历史记录中
-      if (activeCheckinMethod === 'text') {
-        // 添加到文字历史记录
-        const newHistoryItem = {
+    if (expandedDay === 1) {
+      // 第一天的第一个任务
+      if (this.data.dayTasks[0]?.title === activeTask.title) {
+        // 根据打卡方式，添加到对应的历史记录中
+        if (activeCheckinMethod === 'text') {
+          // 添加到文字历史记录
+          const newHistoryItem = {
+            content: checkinContent,
+            time: formattedTime,
+            timestamp: timestamp,
+            index: textInputHistory.length + 1, // 添加序号
+            type: 'text' // 添加类型标记
+          };
+          textInputHistory.unshift(newHistoryItem);
+        } 
+        else if (activeCheckinMethod === 'image') {
+          // 添加到图片历史记录
+          const newImageItem = {
+            imgSrc: checkinContent,
+            time: formattedTime,
+            timestamp: timestamp,
+            index: imageInputHistory.length + 1, // 添加序号
+            type: 'image' // 添加类型标记
+          };
+          imageInputHistory.unshift(newImageItem);
+        }
+        else if (activeCheckinMethod === 'audio') {
+          // 估算语音时长
+          const duration = this.estimateAudioDuration(checkinContent);
+          
+          // 添加到语音历史记录
+          const newAudioItem = {
+            audioSrc: checkinContent,
+            time: formattedTime,
+            timestamp: timestamp,
+            duration: duration,
+            index: audioInputHistory.length + 1, // 添加序号
+            type: 'audio' // 添加类型标记
+          };
+          audioInputHistory.unshift(newAudioItem);
+        }
+        
+        // 更新合并的历史记录
+        const combinedHistory = this.getCombinedHistory(textInputHistory, imageInputHistory, audioInputHistory);
+        
+        this.setData({
+          combinedHistory
+        });
+      }
+      // 第一天的第二个任务
+      else if (this.data.dayTasks[1]?.title === activeTask.title) {
+        // 创建该任务的历史记录
+        const newTaskHistoryItem = {
           content: checkinContent,
           time: formattedTime,
           timestamp: timestamp,
-          index: textInputHistory.length + 1, // 添加序号
-          type: 'text' // 添加类型标记
+          index: task2History.length + 1, // 添加序号
+          type: activeCheckinMethod, // 添加类型标记
+          method: activeCheckinMethod,
+          // 针对不同类型添加不同字段
+          ...(activeCheckinMethod === 'image' ? { imgSrc: checkinContent } : {}),
+          ...(activeCheckinMethod === 'audio' ? { 
+            audioSrc: checkinContent,
+            duration: this.estimateAudioDuration(checkinContent)
+          } : {})
         };
-        textInputHistory.unshift(newHistoryItem);
-      } 
-      else if (activeCheckinMethod === 'image') {
-        // 添加到图片历史记录
-        const newImageItem = {
-          imgSrc: checkinContent,
-          time: formattedTime,
-          timestamp: timestamp,
-          index: imageInputHistory.length + 1, // 添加序号
-          type: 'image' // 添加类型标记
-        };
-        imageInputHistory.unshift(newImageItem);
-      }
-      else if (activeCheckinMethod === 'audio') {
-        // 估算语音时长
-        const duration = this.estimateAudioDuration(checkinContent);
         
-        // 添加到语音历史记录
-        const newAudioItem = {
-          audioSrc: checkinContent,
+        // 添加到任务2的历史记录
+        task2History.unshift(newTaskHistoryItem);
+        
+        // 保存到本地存储
+        wx.setStorage({
+          key: 'task2History',
+          data: JSON.stringify(task2History)
+        });
+      }
+      // 第一天的第三个任务
+      else if (this.data.dayTasks[2]?.title === activeTask.title) {
+        // 创建该任务的历史记录
+        const newTaskHistoryItem = {
+          content: checkinContent,
           time: formattedTime,
           timestamp: timestamp,
-          duration: duration,
-          index: audioInputHistory.length + 1, // 添加序号
-          type: 'audio' // 添加类型标记
+          index: task3History.length + 1, // 添加序号
+          type: activeCheckinMethod, // 添加类型标记
+          method: activeCheckinMethod,
+          // 针对不同类型添加不同字段
+          ...(activeCheckinMethod === 'image' ? { imgSrc: checkinContent } : {}),
+          ...(activeCheckinMethod === 'audio' ? { 
+            audioSrc: checkinContent,
+            duration: this.estimateAudioDuration(checkinContent)
+          } : {})
         };
-        audioInputHistory.unshift(newAudioItem);
+        
+        // 添加到任务3的历史记录
+        task3History.unshift(newTaskHistoryItem);
+        
+        // 保存到本地存储
+        wx.setStorage({
+          key: 'task3History',
+          data: JSON.stringify(task3History)
+        });
       }
-      
-      // 更新合并的历史记录
-      const combinedHistory = this.getCombinedHistory(textInputHistory, imageInputHistory, audioInputHistory);
-      
-      this.setData({
-        combinedHistory
-      });
     }
     
     // 更新数据
@@ -772,6 +861,8 @@ Page({
       textInputHistory: textInputHistory,
       imageInputHistory: imageInputHistory,
       audioInputHistory: audioInputHistory,
+      task2History: task2History,
+      task3History: task3History,
       isCheckinModalVisible: false, // 关闭模态框
       checkinContent: "" // 清空内容
     });
