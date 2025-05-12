@@ -2,20 +2,20 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 40rpx;
+  padding: 30rpx;
   box-sizing: border-box;
   background-color: #F9F9F9;
 }
 
 .header {
-  margin-top: 40rpx;
-  margin-bottom: 40rpx;
+  margin-top: 30rpx;
+  margin-bottom: 30rpx;
 }
 
 .mbti-info {
   display: flex;
   align-items: center;
-  margin-bottom: 30rpx;
+  margin-bottom: 20rpx;
 }
 
 .mbti-label {
@@ -42,9 +42,9 @@
 .statistics-card {
   background-color: white;
   border-radius: 20rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
   display: flex;
   flex-wrap: wrap;
   position: relative;
@@ -56,25 +56,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 16rpx;
+  margin-bottom: 10rpx;
 }
 
 .stat-value {
-  font-size: 40rpx;
+  font-size: 36rpx;
   font-weight: bold;
   color: #6E7BF2;
-  margin-bottom: 6rpx;
+  margin-bottom: 4rpx;
 }
 
 .stat-label {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #999;
 }
 
 .stats-more {
   position: absolute;
-  right: 30rpx;
-  bottom: 20rpx;
+  right: 20rpx;
+  bottom: 10rpx;
   font-size: 24rpx;
   color: #6E7BF2;
   display: flex;
@@ -82,24 +82,24 @@
 }
 
 .arrow {
-  margin-left: 8rpx;
+  margin-left: 6rpx;
 }
 
 /* 修改：日期导航容器 */
 .days-nav-container {
   display: flex;
   align-items: center;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
 }
 
 .day-arrow {
-  width: 80rpx;
-  height: 80rpx;
+  width: 60rpx;
+  height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #6E7BF2;
-  font-size: 32rpx;
+  font-size: 28rpx;
 }
 
 .day-arrow.disabled {
@@ -115,23 +115,23 @@
   display: flex;
   justify-content: space-between;
   background-color: white;
-  border-radius: 20rpx;
-  padding: 24rpx;
-  margin: 0 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  border-radius: 16rpx;
+  padding: 16rpx;
+  margin: 0 10rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 }
 
 .day-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80rpx;
+  width: 60rpx;
 }
 
 .day-text {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #333;
-  margin-bottom: 10rpx;
+  margin-bottom: 8rpx;
 }
 
 .day-item.active .day-text {
@@ -139,13 +139,14 @@
   font-weight: bold;
 }
 
-.day-item.disabled .day-text {
+.day-item.disabled .day-text,
+.day-item.locked .day-text {
   color: #CCC;
 }
 
 .day-indicator {
-  width: 16rpx;
-  height: 16rpx;
+  width: 12rpx;
+  height: 12rpx;
   border-radius: 50%;
   background-color: #E0E0E0;
 }
@@ -161,20 +162,37 @@
 .tasks-container {
   flex: 1;
   background-color: white;
-  border-radius: 20rpx;
-  padding: 40rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-  margin-bottom: 40rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 30rpx;
+  overflow: hidden;
 }
 
 .day-header {
-  margin-bottom: 30rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .day-title {
-  font-size: 36rpx;
+  font-size: 32rpx;
   font-weight: bold;
   color: #333;
+}
+
+.day-status {
+  font-size: 22rpx;
+  color: #4CAF50;
+  padding: 4rpx 12rpx;
+  border-radius: 16rpx;
+  background-color: #E8F5E9;
+}
+
+.day-status.locked-status {
+  color: #FF0000;
+  background-color: #FFEBEE;
 }
 
 .task-list {
@@ -184,9 +202,8 @@
 
 .task-item {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 30rpx 0;
+  flex-direction: column;
+  padding: 20rpx 0;
   border-bottom: 2rpx solid #F0F0F0;
   position: relative;
 }
@@ -195,86 +212,148 @@
   border-bottom: none;
 }
 
-.task-content {
-  flex: 1;
-  margin-right: 20rpx;
+.task-item.locked-mode {
+  opacity: 0.6;
 }
 
-.task-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
+.task-content {
+  flex: 1;
+  width: 100%;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10rpx;
 }
 
+.task-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.task-category {
+  font-size: 20rpx;
+  color: #999;
+  background-color: #F5F5F5;
+  padding: 2rpx 10rpx;
+  border-radius: 12rpx;
+}
+
 .task-reason {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #666;
   margin-bottom: 16rpx;
 }
 
-/* 新增：打卡内容预览 */
-.checkin-preview {
-  margin-top: 20rpx;
-  background-color: #F9F9F9;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  margin-bottom: 10rpx;
+/* 新增：打卡记录列表 */
+.records-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16rpx;
 }
 
-.preview-text {
-  font-size: 28rpx;
-  color: #666;
+.record-item {
+  display: flex;
+  margin-bottom: 12rpx;
+  padding: 10rpx;
+  border-radius: 12rpx;
+  background-color: #F9F9F9;
+}
+
+.record-time {
+  font-size: 20rpx;
+  color: #999;
+  width: 80rpx;
+  min-width: 80rpx;
+  margin-right: 10rpx;
+  padding-top: 4rpx;
+}
+
+.record-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.record-text {
+  font-size: 24rpx;
+  color: #333;
   line-height: 1.5;
 }
 
-.preview-image {
-  width: 100%;
-  height: 200rpx;
+.record-image {
+  width: 120rpx;
+  height: 80rpx;
   border-radius: 8rpx;
   object-fit: cover;
 }
 
-.audio-preview {
+.record-audio {
   display: flex;
   align-items: center;
 }
 
 .audio-icon {
-  font-size: 40rpx;
-  margin-right: 20rpx;
+  font-size: 28rpx;
+  margin-right: 10rpx;
 }
 
 .audio-text {
-  font-size: 28rpx;
+  font-size: 22rpx;
   color: #666;
-  flex: 1;
 }
 
-.play-btn {
-  font-size: 24rpx;
-  color: #6E7BF2;
-  padding: 8rpx 20rpx;
-  border: 2rpx solid #6E7BF2;
-  border-radius: 20rpx;
-}
-
-/* 修改：打卡按钮区域 */
-.checkin-actions {
+/* 未解锁提示 */
+.locked-hint {
+  margin-top: 16rpx;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+}
+
+.locked-text {
+  font-size: 24rpx;
+  color: #FF0000;
+  font-weight: bold;
+}
+
+/* 打卡按钮区域 */
+.checkin-actions {
+  margin-top: 20rpx;
+  width: 100%;
+}
+
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .action-btn {
-  width: 120rpx;
+  flex: 1;
   height: 60rpx;
   border-radius: 8rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10rpx;
+  margin-right: 10rpx;
+}
+
+.action-btn:last-child {
+  margin-right: 0;
+}
+
+.action-icon {
+  font-size: 20rpx;
+  color: white;
+  margin-right: 6rpx;
+}
+
+.action-label {
+  font-size: 20rpx;
+  color: white;
 }
 
 .text-btn {
@@ -289,50 +368,35 @@
   background-color: #FF6B6B;
 }
 
-.action-icon {
-  font-size: 24rpx;
-  color: white;
-  margin-bottom: 4rpx;
-}
-
-.action-label {
-  font-size: 20rpx;
-  color: white;
-}
-
-.completed-tag, .locked-tag {
-  padding: 8rpx 16rpx;
-  border-radius: 20rpx;
-  font-size: 24rpx;
+/* 状态标签 */
+.completion-status {
   position: absolute;
-  top: 30rpx;
+  top: 20rpx;
   right: 0;
 }
 
 .completed-tag {
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
   background-color: #4CAF50;
   color: white;
 }
 
-.locked-tag {
-  background-color: #E0E0E0;
-  color: #999;
-}
-
-/* 新增：报告按钮区域 */
+/* 报告按钮区域 */
 .report-button-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 40rpx;
+  margin-bottom: 30rpx;
 }
 
 .view-report-btn, .next-week-btn {
   width: 80%;
-  height: 90rpx;
-  font-size: 32rpx;
+  height: 80rpx;
+  font-size: 28rpx;
   color: white;
-  border-radius: 45rpx;
+  border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -380,7 +444,7 @@
 }
 
 .modal-header {
-  padding: 40rpx;
+  padding: 30rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -388,49 +452,49 @@
 }
 
 .modal-title {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #333;
-}
-
-.close-btn {
-  font-size: 48rpx;
-  color: #999;
-}
-
-.modal-body {
-  padding: 40rpx;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.task-info {
-  margin-bottom: 30rpx;
-}
-
-.task-name {
   font-size: 32rpx;
   font-weight: bold;
   color: #333;
 }
 
+.close-btn {
+  font-size: 40rpx;
+  color: #999;
+}
+
+.modal-body {
+  padding: 30rpx;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.task-info {
+  margin-bottom: 20rpx;
+}
+
+.task-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
 .checkin-form {
-  margin-bottom: 30rpx;
+  margin-bottom: 20rpx;
 }
 
 .text-input {
   width: 100%;
-  height: 300rpx;
+  height: 240rpx;
   padding: 20rpx;
   border: 2rpx solid #E0E0E0;
   border-radius: 10rpx;
-  font-size: 28rpx;
+  font-size: 26rpx;
   box-sizing: border-box;
 }
 
 .image-upload {
   width: 100%;
-  height: 400rpx;
+  height: 320rpx;
   border: 2rpx dashed #E0E0E0;
   border-radius: 10rpx;
   display: flex;
@@ -442,6 +506,7 @@
 .preview-image {
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 .upload-btn {
@@ -451,13 +516,13 @@
 }
 
 .upload-icon {
-  font-size: 60rpx;
+  font-size: 50rpx;
   color: #CCC;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .upload-text {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #999;
 }
 
@@ -468,8 +533,8 @@
 }
 
 .record-btn {
-  width: 200rpx;
-  height: 200rpx;
+  width: 160rpx;
+  height: 160rpx;
   border-radius: 50%;
   background-color: #F5F5F5;
   display: flex;
@@ -479,12 +544,12 @@
 }
 
 .record-icon {
-  font-size: 60rpx;
-  margin-bottom: 10rpx;
+  font-size: 50rpx;
+  margin-bottom: 8rpx;
 }
 
 .record-text {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #666;
 }
 
@@ -495,31 +560,159 @@
 }
 
 .preview-text {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #4CAF50;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .rerecord-btn {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #6E7BF2;
-  padding: 12rpx 30rpx;
+  padding: 8rpx 24rpx;
   border: 2rpx solid #6E7BF2;
-  border-radius: 30rpx;
+  border-radius: 24rpx;
 }
 
 .modal-footer {
-  padding: 30rpx 40rpx;
+  padding: 20rpx 30rpx;
   border-top: 2rpx solid #F0F0F0;
 }
 
 .submit-btn {
   background-color: #6E7BF2;
   color: white;
-  font-size: 32rpx;
-  height: 90rpx;
-  border-radius: 45rpx;
+  font-size: 28rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.task-item.preview-mode {
+  opacity: 0.7;
+  background-color: #F9F9F9;
+  border-radius: 10rpx;
+  padding: 30rpx;
+  margin: 0 0 20rpx 0;
+}
+
+/* 新的并排样式布局 */
+.checkin-row {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-top: 20rpx;
+  overflow-x: auto;
+  padding-bottom: 10rpx;
+}
+
+.checkin-preview {
+  width: 100%;
+}
+
+.preview-method {
+  background-color: #F9F9F9;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-right: 10rpx;
+}
+
+/* 占位内容样式 */
+.placeholder-row {
+  display: flex;
+  align-items: stretch;
+  margin-top: 20rpx;
+  overflow-x: auto;
+}
+
+.placeholder-item {
+  flex: 1;
+  min-width: 200rpx;
+  margin-right: 20rpx;
+  background-color: #F9F9F9;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.placeholder-item:last-child {
+  margin-right: 0;
+}
+
+.text-placeholder {
+  border-left: 4rpx solid #6E7BF2;
+}
+
+.image-placeholder {
+  border-left: 4rpx solid #4CAF50;
+}
+
+.audio-placeholder {
+  border-left: 4rpx solid #FF6B6B;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.placeholder-icon {
+  font-size: 24rpx;
+  background-color: #6E7BF2;
+  color: white;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+  text-align: center;
+  line-height: 40rpx;
+  margin-bottom: 10rpx;
+}
+
+.placeholder-content {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 120rpx;
+  border-radius: 8rpx;
+  object-fit: cover;
+}
+
+.placeholder-audio {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 10rpx;
+}
+
+/* 修改打卡按钮区域，改为并列 */
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.action-btn {
+  width: 30%;
+  height: 80rpx;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10rpx;
+}
+
+.action-btn:last-child {
+  margin-right: 0;
+}
+
+.action-icon {
+  font-size: 24rpx;
+  color: white;
+  margin-right: 10rpx;
 } 

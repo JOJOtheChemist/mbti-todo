@@ -41,7 +41,7 @@
       <view 
         wx:for="{{7}}" 
         wx:key="*this"
-        class="day-item {{expandedDay === index + 1 ? 'active' : ''}} {{currentDay < index + 1 ? 'disabled' : ''}}"
+        class="day-item {{expandedDay === index + 1 ? 'active' : ''}} {{!isDayUnlocked(index + 1) ? 'locked' : ''}}"
         bindtap="handleDayTap"
         data-day="{{index + 1}}"
       >
@@ -50,64 +50,82 @@
       </view>
     </view>
     
-    <view class="day-arrow {{expandedDay === 7 || expandedDay >= currentDay ? 'disabled' : ''}}" bindtap="navigateNextDay">
+    <view class="day-arrow {{expandedDay === 7 ? 'disabled' : ''}}" bindtap="navigateNextDay">
       <text class="arrow-icon">→</text>
     </view>
   </view>
   
-  <view class="tasks-container">
+  <!-- 滑动容器 -->
+  <view class="tasks-container" bindtouchstart="handleTouchStart" bindtouchend="handleTouchEnd">
     <view class="day-header">
       <text class="day-title">第{{expandedDay}}天任务</text>
+      <text class="day-status {{!isDayUnlocked(expandedDay) ? 'locked-status' : ''}}">
+        {{getDayStatusText(expandedDay)}}
+      </text>
     </view>
     
     <view class="task-list">
       <view 
         wx:for="{{dayTasks}}" 
         wx:key="title"
-        class="task-item {{isTaskCompleted(expandedDay, item.title) ? 'completed' : ''}}"
+        class="task-item {{isTaskCompleted(expandedDay, item.title) ? 'completed' : ''}} {{!isDayUnlocked(expandedDay) ? 'locked-mode' : ''}}"
       >
         <view class="task-content">
-          <view class="task-title">{{item.title}}</view>
+          <view class="task-header">
+            <view class="task-title">{{item.title}}</view>
+            <view class="task-category">{{item.type}} · {{item.difficulty}}</view>
+          </view>
           <view class="task-reason">为什么：{{item.reason}}</view>
           
-          <!-- 直接显示打卡内容预览 -->
-          <view class="checkin-preview" wx:if="{{isTaskCompleted(expandedDay, item.title)}}">
-            <view class="preview-content" wx:if="{{getTaskCheckinDetails(expandedDay, item.title).method === 'text'}}">
-              <text class="preview-text">{{getTaskCheckinDetails(expandedDay, item.title).content}}</text>
-            </view>
-            <view class="preview-content" wx:elif="{{getTaskCheckinDetails(expandedDay, item.title).method === 'image'}}">
-              <image class="preview-image" src="{{getTaskCheckinDetails(expandedDay, item.title).content}}" mode="aspectFill"></image>
-            </view>
-            <view class="preview-content" wx:elif="{{getTaskCheckinDetails(expandedDay, item.title).method === 'audio'}}">
-              <view class="audio-preview">
-                <text class="audio-icon">🔊</text>
-                <text class="audio-text">语音记录</text>
-                <text class="play-btn" data-audio="{{getTaskCheckinDetails(expandedDay, item.title).content}}" bindtap="playAudio">播放</text>
+          <!-- 任务打卡记录列表 -->
+          <view class="records-list" wx:if="{{getTaskCheckinRecords(expandedDay, item.title).length > 0 && isDayUnlocked(expandedDay)}}">
+            <view 
+              wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
+              wx:for-item="record"
+              wx:key="timestamp"
+              class="record-item record-{{record.method}}"
+            >
+              <view class="record-time">{{record.timeFormatted}}</view>
+              <view class="record-content">
+                <text wx:if="{{record.method === 'text'}}" class="record-text">{{record.content}}</text>
+                <image wx:elif="{{record.method === 'image'}}" class="record-image" src="{{record.content}}" mode="aspectFill"></image>
+                <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio="{{record.content}}">
+                  <text class="audio-icon">🔊</text>
+                  <text class="audio-text">播放</text>
+                </view>
               </view>
+            </view>
+          </view>
+          
+          <!-- 未解锁状态提示 -->
+          <view class="locked-hint" wx:if="{{!isDayUnlocked(expandedDay)}}">
+            <text class="locked-text">未解锁</text>
+          </view>
+        </view>
+        
+        <!-- 打卡按钮区域 -->
+        <view class="checkin-actions" wx:if="{{isDayUnlocked(expandedDay)}}">
+          <view class="action-row">
+            <view class="action-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
+              <text class="action-icon">T</text>
+              <text class="action-label">添加文字</text>
+            </view>
+            <view class="action-btn image-btn" bindtap="openImageCheckin" data-task="{{item}}">
+              <text class="action-icon">🖼️</text>
+              <text class="action-label">添加图片</text>
+            </view>
+            <view class="action-btn audio-btn" bindtap="openAudioCheckin" data-task="{{item}}">
+              <text class="action-icon">🎤</text>
+              <text class="action-label">添加语音</text>
             </view>
           </view>
         </view>
         
-        <!-- 直接显示三个快捷按钮 -->
-        <view class="checkin-actions" wx:if="{{!isTaskCompleted(expandedDay, item.title) && currentDay >= expandedDay}}">
-          <view class="action-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
-            <text class="action-icon">T</text>
-            <text class="action-label">文字</text>
+        <!-- 已完成标志 -->
+        <view class="completion-status">
+          <view class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title) && isDayUnlocked(expandedDay)}}">
+            <text>已完成</text>
           </view>
-          <view class="action-btn image-btn" bindtap="openImageCheckin" data-task="{{item}}">
-            <text class="action-icon">🖼️</text>
-            <text class="action-label">图片</text>
-          </view>
-          <view class="action-btn audio-btn" bindtap="openAudioCheckin" data-task="{{item}}">
-            <text class="action-icon">🎤</text>
-            <text class="action-label">语音</text>
-          </view>
-        </view>
-        <view class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title)}}">
-          <text>已完成</text>
-        </view>
-        <view class="locked-tag" wx:elif="{{currentDay < expandedDay}}">
-          <text>未解锁</text>
         </view>
       </view>
     </view>
