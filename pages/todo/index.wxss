@@ -1018,6 +1018,29 @@
   border: 1px solid #e0e0e6;
 }
 
+/* 全局历史记录样式 */
+.global-history {
+  background-color: #f6f8ff;
+  border: 1px solid #d8e0ff;
+  margin-bottom: 25rpx;
+}
+
+.global-history .history-title {
+  color: #6E7BF2;
+  border-bottom: 1px solid #d8e0ff;
+  font-size: 28rpx;
+}
+
+/* 任务特定历史记录的样式增强 */
+.task-content .unified-history-container {
+  margin-top: 20rpx;
+  border-top: 1px dashed #eaeaea;
+}
+
+.task-history {
+  background-color: #f7f7f9;
+}
+
 .history-title {
   font-size: 26rpx;
   font-weight: 500;
@@ -1026,6 +1049,23 @@
   padding-bottom: 8rpx;
   border-bottom: 1px solid #eee;
   text-align: center;
+}
+
+/* 任务特定标题样式 */
+.task-content .history-title {
+  color: #555;
+  font-size: 24rpx;
+  background: linear-gradient(to right, transparent, #f0f0f4, transparent);
+}
+
+/* 无记录时的提示样式 */
+.no-records {
+  padding: 20rpx;
+  text-align: center;
+  color: #999;
+  font-size: 24rpx;
+  background-color: #f9f9f9;
+  border-radius: 8rpx;
 }
 
 .unified-history-list {

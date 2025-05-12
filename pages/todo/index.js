@@ -22,6 +22,7 @@ Page({
     textInputHistory: [], // 存储所有文字打卡历史
     imageInputHistory: [], // 存储所有图片打卡历史
     audioInputHistory: [], // 存储所有语音打卡历史
+    combinedHistory: [], // 新增：存储混合排序的所有类型打卡历史
     currentPlayingAudio: '', // 当前正在播放的语音
     // 预设7天的任务
     presetTasks: [
@@ -247,6 +248,9 @@ Page({
           console.error('读取语音历史记录失败', e);
         }
         
+        // 合并所有历史记录并按时间排序
+        const combinedHistory = this.getCombinedHistory(textInputHistory, imageInputHistory, audioInputHistory);
+        
         // 设置当前页面数据
         this.setData({
           mbtiType,
@@ -260,7 +264,8 @@ Page({
           checkinRecords,
           textInputHistory,
           imageInputHistory,
-          audioInputHistory
+          audioInputHistory,
+          combinedHistory
         });
       },
       fail: () => {
@@ -274,7 +279,8 @@ Page({
           currentDay,
           expandedDay: currentDay,
           dayTasks: this.data.presetTasks[0],
-          allDayTasks: this.data.presetTasks
+          allDayTasks: this.data.presetTasks,
+          combinedHistory: [] // 初始化空的合并历史
         });
       }
     });
@@ -346,6 +352,36 @@ Page({
     const taskKey = `day${day}_${taskTitle}`;
     
     return checkinRecords[taskKey] || [];
+  },
+  
+  // 新增：获取指定任务的混合排序历史记录
+  getTaskMixedHistory(day, taskTitle) {
+    // 获取任务的打卡记录
+    const taskRecords = this.getTaskCheckinRecords(day, taskTitle);
+    
+    if (!taskRecords || taskRecords.length === 0) {
+      return [];
+    }
+    
+    // 给每个记录添加索引和类型信息
+    const processedRecords = taskRecords.map((record, index) => {
+      // 创建索引从1开始，按照记录类型分组计数
+      // 计算同类型记录的数量
+      const sameTypeRecords = taskRecords.filter(r => r.method === record.method);
+      const typeIndex = sameTypeRecords.findIndex(r => r.timestamp === record.timestamp) + 1;
+      
+      // 返回处理后的记录
+      return {
+        ...record,
+        type: record.method,  // 确保每条记录有type字段
+        index: typeIndex,     // 同类型记录的索引
+        // 根据记录类型区分content字段
+        displayContent: record.content
+      };
+    });
+    
+    // 按时间戳降序排序（最新的在前面）
+    return processedRecords.sort((a, b) => b.timestamp - a.timestamp);
   },
   
   // 判断任务是否已完成
@@ -555,6 +591,11 @@ Page({
   // 播放录音
   playAudio(e) {
     const { audioSrc } = e.currentTarget.dataset;
+    // 如果是从组件传递过来的事件
+    if (e.detail && e.detail.src) {
+      this._playAudio(e.detail.src);
+      return;
+    }
     
     // 如果没有音频源，直接返回
     if (!audioSrc) {
@@ -562,6 +603,11 @@ Page({
       return;
     }
     
+    this._playAudio(audioSrc);
+  },
+  
+  // 内部处理播放音频的方法
+  _playAudio(audioSrc) {
     // 如果有正在播放的语音，先停止它
     if (this.innerAudioContext) {
       this.innerAudioContext.stop();
@@ -679,7 +725,8 @@ Page({
           content: checkinContent,
           time: formattedTime,
           timestamp: timestamp,
-          index: textInputHistory.length + 1 // 添加序号
+          index: textInputHistory.length + 1, // 添加序号
+          type: 'text' // 添加类型标记
         };
         textInputHistory.unshift(newHistoryItem);
       } 
@@ -689,7 +736,8 @@ Page({
           imgSrc: checkinContent,
           time: formattedTime,
           timestamp: timestamp,
-          index: imageInputHistory.length + 1 // 添加序号
+          index: imageInputHistory.length + 1, // 添加序号
+          type: 'image' // 添加类型标记
         };
         imageInputHistory.unshift(newImageItem);
       }
@@ -703,10 +751,18 @@ Page({
           time: formattedTime,
           timestamp: timestamp,
           duration: duration,
-          index: audioInputHistory.length + 1 // 添加序号
+          index: audioInputHistory.length + 1, // 添加序号
+          type: 'audio' // 添加类型标记
         };
         audioInputHistory.unshift(newAudioItem);
       }
+      
+      // 更新合并的历史记录
+      const combinedHistory = this.getCombinedHistory(textInputHistory, imageInputHistory, audioInputHistory);
+      
+      this.setData({
+        combinedHistory
+      });
     }
     
     // 更新数据
@@ -753,6 +809,36 @@ Page({
       title: '打卡成功！',
       icon: 'success'
     });
+  },
+  
+  // 新增：合并并排序所有类型的历史记录
+  getCombinedHistory(textHistory, imageHistory, audioHistory) {
+    // 处理文字历史
+    const textRecords = textHistory.map(item => ({
+      ...item,
+      type: 'text',
+      content: item.content
+    }));
+    
+    // 处理图片历史
+    const imageRecords = imageHistory.map(item => ({
+      ...item,
+      type: 'image',
+      content: item.imgSrc
+    }));
+    
+    // 处理音频历史
+    const audioRecords = audioHistory.map(item => ({
+      ...item,
+      type: 'audio',
+      content: item.audioSrc
+    }));
+    
+    // 合并所有记录
+    const allRecords = [...textRecords, ...imageRecords, ...audioRecords];
+    
+    // 按时间戳降序排序（最新的在前面）
+    return allRecords.sort((a, b) => b.timestamp - a.timestamp);
   },
   
   // 格式化时间
@@ -805,7 +891,21 @@ Page({
   // 预览图片
   previewImage(e) {
     const { imgSrc } = e.currentTarget.dataset;
+    // 如果是从组件传递过来的事件
+    if (e.detail && e.detail.src) {
+      this._previewImage(e.detail.src);
+      return;
+    }
     
+    if (!imgSrc) {
+      return;
+    }
+    
+    this._previewImage(imgSrc);
+  },
+  
+  // 内部处理图片预览的方法
+  _previewImage(imgSrc) {
     // 获取当前任务的所有图片记录和历史图片记录
     const { expandedDay, dayTasks, imageInputHistory } = this.data;
     const currentTask = dayTasks[0]; // 第一个任务
@@ -844,5 +944,38 @@ Page({
         urls: [imgSrc]
       });
     }
+  },
+  
+  // 新增：获取所有混合排序的历史记录用于组件展示
+  getAllHistoryRecords(textHistory, imageHistory, audioHistory) {
+    // 处理文字历史
+    const textRecords = textHistory.map(item => ({
+      ...item,
+      type: 'text',
+      content: item.content || item.displayContent,
+      timeFormatted: item.timeFormatted || item.time
+    }));
+    
+    // 处理图片历史
+    const imageRecords = imageHistory.map(item => ({
+      ...item,
+      type: 'image',
+      content: item.imgSrc || item.content,
+      timeFormatted: item.timeFormatted || item.time
+    }));
+    
+    // 处理音频历史
+    const audioRecords = audioHistory.map(item => ({
+      ...item,
+      type: 'audio',
+      content: item.audioSrc || item.content,
+      timeFormatted: item.timeFormatted || item.time
+    }));
+    
+    // 合并所有记录
+    const allRecords = [...textRecords, ...imageRecords, ...audioRecords];
+    
+    // 按时间戳降序排序（最新的在前面）
+    return allRecords.sort((a, b) => b.timestamp - a.timestamp);
   },
 }) 
