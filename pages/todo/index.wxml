@@ -85,17 +85,83 @@
               </view>
               <view class="task-reason">为什么：{{item.reason}}</view>
               
-              <!-- 文字打卡记录显示在为什么下方 -->
-              <view class="text-record-display" wx:if="{{expandedDay === 1 && index === 0 && getTaskCheckinRecords(expandedDay, item.title).length > 0}}">
-                <view wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
-                      wx:for-item="record" 
-                      wx:key="timestamp" 
-                      wx:if="{{record.method === 'text'}}">
-                  <view class="text-record-content">
-                    <text class="record-text">{{record.content}}</text>
-                    <text class="record-timestamp">{{record.timeFormatted}}</text>
+              <!-- 文字打卡内容显示容器 -->
+              <view class="text-checkin-container" wx:if="{{expandedDay === 1 && index === 0 && latestTextInput.content}}">
+                <view class="latest-checkin">
+                  <view class="checkin-title">刚刚发了文字打卡内容</view>
+                  <view class="checkin-content">
+                    <!-- 显示打卡内容 -->
+                    <view class="date-content-box">
+                      <text class="date-label">{{latestTextInput.time}}</text>
+                      <text class="dash-separator">-</text>
+                      <text class="content-text">{{latestTextInput.content}}</text>
+                    </view>
                   </view>
                 </view>
+              </view>
+              
+              <!-- 图片打卡内容显示容器 -->
+              <view class="image-checkin-container" wx:if="{{expandedDay === 1 && index === 0 && latestImageInput.imgSrc}}">
+                <view class="latest-checkin">
+                  <view class="checkin-title">刚刚上传了图片</view>
+                  <view class="checkin-content">
+                    <!-- 显示图片缩略图 -->
+                    <view class="image-preview-box">
+                      <view class="image-time">{{latestImageInput.time}}</view>
+                      <image 
+                        class="thumbnail-image" 
+                        src="{{latestImageInput.imgSrc}}" 
+                        mode="aspectFill" 
+                        bindtap="previewImage" 
+                        data-img-src="{{latestImageInput.imgSrc}}"
+                      ></image>
+                      <view class="image-hint">点击图片可放大查看</view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 历史打卡记录显示 -->
+              <view class="checkin-records-container" wx:if="{{expandedDay === 1 && index === 0 && getTaskCheckinRecords(expandedDay, item.title).length > 0}}">
+                <view class="records-title">历史打卡记录</view>
+                <!-- 文字打卡记录 -->
+                <block>
+                  <view wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
+                        wx:for-item="record" 
+                        wx:key="timestamp"
+                        class="checkin-record {{record.method}}-record"
+                        wx:if="{{record.method === 'text'}}">
+                    <view class="checkin-header">
+                      <text class="checkin-type">文字打卡</text>
+                      <text class="checkin-time">{{record.timeFormatted}}</text>
+                    </view>
+                    <view class="checkin-body">
+                      <text class="checkin-text">{{record.content}}</text>
+                    </view>
+                  </view>
+                </block>
+                
+                <!-- 图片打卡记录 -->
+                <block>
+                  <view wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
+                        wx:for-item="record" 
+                        wx:key="timestamp"
+                        class="checkin-record {{record.method}}-record"
+                        wx:if="{{record.method === 'image'}}">
+                    <view class="checkin-header">
+                      <text class="checkin-type">图片打卡</text>
+                      <text class="checkin-time">{{record.timeFormatted}}</text>
+                    </view>
+                    <view class="checkin-body">
+                      <image class="checkin-image" 
+                             src="{{record.content}}" 
+                             mode="aspectFill" 
+                             bindtap="previewImage" 
+                             data-img-src="{{record.content}}"></image>
+                      <view class="image-hint">点击图片可放大查看</view>
+                    </view>
+                  </view>
+                </block>
               </view>
               
               <!-- 打卡按钮区域 - 三个圆角矩形按钮 -->

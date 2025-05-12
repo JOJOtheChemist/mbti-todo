@@ -670,32 +670,356 @@
   }
 }
 
-/* 文字打卡记录显示在为什么下方的样式 */
-.text-record-display {
-  margin: 16rpx 0;
-  border-left: 4rpx solid #6E7BF2;
-  padding-left: 16rpx;
-}
-
-.text-record-content {
+/* 直接显示在为什么下方的文字打卡记录样式 */
+.direct-text-record {
+  margin: 10rpx 0 20rpx 0;
+  background-color: #f1f4ff;
+  padding: 12rpx 16rpx;
+  border-radius: 8rpx;
+  border-left: 6rpx solid #6E7BF2;
   display: flex;
   flex-direction: column;
-  background: #F5F7FF;
-  padding: 12rpx;
-  border-radius: 8rpx;
-  position: relative;
 }
 
-.text-record-content .record-text {
-  font-size: 24rpx;
+.direct-record-text {
+  font-size: 26rpx;
   color: #333;
-  line-height: 1.5;
-  margin-bottom: 10rpx;
-  word-break: break-word;
+  line-height: 1.6;
+  margin-bottom: 8rpx;
+  word-break: break-all;
 }
 
-.text-record-content .record-timestamp {
+.direct-record-timestamp {
   font-size: 20rpx;
   color: #999;
   text-align: right;
-} 
+}
+
+/* 打卡记录显示样式 - 增强视觉效果 */
+.debug-info {
+  font-size: 24rpx;
+  color: #999;
+  margin: 10rpx 0;
+  font-style: italic;
+  text-align: center;
+}
+
+.checkin-record {
+  margin: 15rpx 0 20rpx 0;
+  padding: 15rpx;
+  border-radius: 10rpx;
+  background-color: #F5F7FF;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  border-left: 8rpx solid #6E7BF2;
+}
+
+.text-record {
+  border-left-color: #6E7BF2;
+}
+
+.image-record {
+  border-left-color: #4CAF50;
+}
+
+.audio-record {
+  border-left-color: #FF6B6B;
+}
+
+.checkin-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+  padding-bottom: 8rpx;
+  border-bottom: 1rpx dashed #ddd;
+}
+
+.checkin-type {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #6E7BF2;
+}
+
+.checkin-time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.checkin-body {
+  padding: 6rpx 0;
+}
+
+.checkin-text {
+  font-size: 26rpx;
+  line-height: 1.6;
+  color: #333;
+  display: block;
+  width: 100%;
+  word-break: break-all;
+}
+
+.checkin-image {
+  width: 200rpx;
+  height: 150rpx;
+  border-radius: 8rpx;
+  object-fit: cover;
+}
+
+.checkin-audio {
+  display: flex;
+  align-items: center;
+  background-color: #FFF0F0;
+  padding: 10rpx;
+  border-radius: 8rpx;
+  width: fit-content;
+}
+
+.audio-icon {
+  font-size: 28rpx;
+  margin-right: 10rpx;
+  color: #FF6B6B;
+}
+
+.audio-label {
+  font-size: 22rpx;
+  color: #FF6B6B;
+}
+
+/* 文字打卡内容容器 */
+.text-checkin-container {
+  margin: 15rpx 0;
+  border-radius: 10rpx;
+  background-color: #f9f9f9;
+  padding: 15rpx;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+/* 图片打卡内容容器 */
+.image-checkin-container {
+  margin: 15rpx 0;
+  border-radius: 10rpx;
+  background-color: #f9f9f9;
+  padding: 15rpx;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+.latest-checkin {
+  width: 100%;
+}
+
+.checkin-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.checkin-content {
+  padding: 8rpx 0;
+}
+
+.date-content-box {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: #555;
+  flex-wrap: wrap;
+}
+
+.date-label {
+  color: #666;
+  margin-right: 5rpx;
+}
+
+.dash-separator {
+  margin: 0 8rpx;
+  color: #999;
+}
+
+.content-text {
+  color: #333;
+  word-break: break-all;
+}
+
+.no-checkin {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+  padding: 10rpx 0;
+}
+
+/* 图片预览样式 */
+.image-preview-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.image-time {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  align-self: flex-start;
+}
+
+.thumbnail-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 8rpx;
+  object-fit: cover;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.thumbnail-image:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+.image-hint {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 8rpx;
+  text-align: center;
+}
+
+/* 任务内容样式 */
+/* ... existing code ... */
+
+/* 打卡记录容器 - 支持多个记录显示 */
+.checkin-records-container {
+  margin: 15rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+  max-height: 400rpx;
+  overflow-y: auto;
+  padding: 15rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+/* 打卡记录 */
+.checkin-record {
+  border-radius: 10rpx;
+  background-color: #f9f9f9;
+  padding: 12rpx 15rpx;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+  transition: all 0.2s ease;
+}
+
+.checkin-record:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 不同类型记录的边框颜色 */
+.text-record {
+  border-left: 3px solid #6E7BF2;
+}
+
+.image-record {
+  border-left: 3px solid #4CAF50;
+}
+
+.audio-record {
+  border-left: 3px solid #FF6B6B;
+}
+
+.checkin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+  padding-bottom: 6rpx;
+  border-bottom: 1px dashed #eee;
+}
+
+.checkin-type {
+  font-size: 22rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.checkin-time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.checkin-body {
+  padding: 8rpx 0;
+}
+
+.checkin-text {
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: #333;
+  word-break: break-all;
+}
+
+.checkin-image {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 8rpx;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.checkin-image:active {
+  transform: scale(0.98);
+}
+
+.no-checkin {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+  padding: 15rpx;
+  background-color: #f5f5f5;
+  border-radius: 8rpx;
+}
+
+.image-hint {
+  font-size: 20rpx;
+  color: #999;
+  text-align: center;
+  margin-top: 8rpx;
+}
+
+/* 美化滚动条 */
+.checkin-records-container::-webkit-scrollbar {
+  width: 4rpx;
+}
+
+.checkin-records-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2rpx;
+}
+
+.checkin-records-container::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 2rpx;
+}
+
+.checkin-records-container::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* 记录标题 */
+.records-title {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 12rpx;
+  padding-bottom: 8rpx;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+/* ... existing code ... */ 

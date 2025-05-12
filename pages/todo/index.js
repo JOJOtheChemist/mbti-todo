@@ -170,7 +170,10 @@ Page({
       ]
     ],
     allDayTasks: [], // 存储所有天的任务
-    checkinRecords: {}  // 存储各任务的打卡记录，按时间顺序保存
+    checkinRecords: {},  // 存储各任务的打卡记录，按时间顺序保存
+    latestTextInput: {},  // 存储最新文字输入
+    latestImageInput: {}, // 存储最新图片输入
+    isPreviewVisible: false, // 是否显示图片预览
   },
 
   onLoad() {
@@ -210,6 +213,28 @@ Page({
           console.error('读取打卡记录失败', e);
         }
         
+        // 读取最新文字输入
+        let latestTextInput = {};
+        try {
+          const textInputData = wx.getStorageSync('latestTextInput');
+          if (textInputData) {
+            latestTextInput = JSON.parse(textInputData);
+          }
+        } catch (e) {
+          console.error('读取最新文字输入失败', e);
+        }
+        
+        // 读取最新图片输入
+        let latestImageInput = {};
+        try {
+          const imageInputData = wx.getStorageSync('latestImageInput');
+          if (imageInputData) {
+            latestImageInput = JSON.parse(imageInputData);
+          }
+        } catch (e) {
+          console.error('读取最新图片输入失败', e);
+        }
+        
         // 设置当前页面数据
         this.setData({
           mbtiType,
@@ -220,7 +245,9 @@ Page({
           dayTasks: allTasks[currentDay - 1],
           allDayTasks: allTasks,
           daysCompleted,
-          checkinRecords
+          checkinRecords,
+          latestTextInput,
+          latestImageInput
         });
       },
       fail: () => {
@@ -533,14 +560,17 @@ Page({
       return;
     }
     
+    const now = new Date();
+    const timestamp = now.getTime();
+    const formattedTime = this.formatTime(now);
+    
     // 创建记录
-    const timestamp = new Date().getTime();
     const newRecord = {
       taskTitle: activeTask.title,
       method: activeCheckinMethod,
       content: checkinContent,
       timestamp: timestamp,
-      timeFormatted: this.formatTime(new Date(timestamp))
+      timeFormatted: formattedTime
     };
     
     // 更新记录列表
@@ -549,8 +579,8 @@ Page({
       checkinRecords[taskKey] = [];
     }
     
-    // 添加新记录到记录列表
-    checkinRecords[taskKey].push(newRecord);
+    // 添加新记录到记录列表 - 始终放在数组最前面
+    checkinRecords[taskKey].unshift(newRecord);
     
     // 更新完成状态
     const newDaysCompleted = { ...daysCompleted };
@@ -567,6 +597,33 @@ Page({
       });
     }
     
+    // 如果是第一天的第一个任务 且 是文字打卡，保存用户输入
+    let latestTextInput = this.data.latestTextInput || {};
+    if (expandedDay === 1 && this.data.dayTasks[0]?.title === activeTask.title && activeCheckinMethod === 'text') {
+      latestTextInput = {
+        content: checkinContent,
+        time: formattedTime
+      };
+    }
+    
+    // 如果是第一天的第一个任务 且 是图片打卡，保存用户上传的图片
+    let latestImageInput = this.data.latestImageInput || {};
+    if (expandedDay === 1 && this.data.dayTasks[0]?.title === activeTask.title && activeCheckinMethod === 'image') {
+      latestImageInput = {
+        imgSrc: checkinContent,
+        time: formattedTime
+      };
+    }
+    
+    // 先更新数据，确保界面能够更新
+    this.setData({
+      checkinRecords: checkinRecords,
+      daysCompleted: newDaysCompleted,
+      latestTextInput: latestTextInput,
+      latestImageInput: latestImageInput,
+      isCheckinModalVisible: false  // 直接关闭模态框
+    });
+    
     // 保存到本地存储
     wx.setStorage({
       key: 'checkinRecords',
@@ -578,10 +635,16 @@ Page({
       data: JSON.stringify(newDaysCompleted)
     });
     
-    this.setData({
-      checkinRecords,
-      daysCompleted: newDaysCompleted,
-      isCheckinModalVisible: false
+    // 保存最新文字输入
+    wx.setStorage({
+      key: 'latestTextInput',
+      data: JSON.stringify(latestTextInput)
+    });
+    
+    // 保存最新图片输入
+    wx.setStorage({
+      key: 'latestImageInput',
+      data: JSON.stringify(latestImageInput)
     });
     
     wx.showToast({
@@ -635,5 +698,42 @@ Page({
     wx.navigateTo({
       url: '/pages/test/index'
     });
-  }
+  },
+  
+  // 预览图片
+  previewImage(e) {
+    const { imgSrc } = e.currentTarget.dataset;
+    
+    // 获取当前任务的所有图片记录，用于构建预览数组
+    const { expandedDay, dayTasks } = this.data;
+    const currentTask = dayTasks[0]; // 第一个任务
+    
+    if (currentTask) {
+      const taskKey = `day${expandedDay}_${currentTask.title}`;
+      const records = this.data.checkinRecords[taskKey] || [];
+      const imageUrls = records
+        .filter(record => record.method === 'image')
+        .map(record => record.content);
+      
+      // 如果有多张图片，全部加入预览
+      if (imageUrls.length > 0) {
+        wx.previewImage({
+          current: imgSrc, // 当前显示图片的链接
+          urls: imageUrls // 需要预览的图片链接列表
+        });
+      } else {
+        // 如果没有找到图片记录，只预览当前图片
+        wx.previewImage({
+          current: imgSrc,
+          urls: [imgSrc]
+        });
+      }
+    } else {
+      // 如果找不到当前任务，只预览当前图片
+      wx.previewImage({
+        current: imgSrc,
+        urls: [imgSrc]
+      });
+    }
+  },
 }) 
