@@ -100,6 +100,27 @@
                 </view>
               </view>
               
+              <!-- 文字打卡历史记录容器 -->
+              <view class="text-history-container" wx:if="{{expandedDay === 1 && index === 0 && textInputHistory.length > 0}}">
+                <view class="history-title">文字打卡历史</view>
+                <view class="history-list">
+                  <view 
+                    wx:for="{{textInputHistory}}" 
+                    wx:for-item="historyItem" 
+                    wx:key="timestamp"
+                    class="history-item"
+                  >
+                    <view class="history-header">
+                      <text class="history-index">记录 #{{historyItem.index}}</text>
+                      <text class="history-time">{{historyItem.time}}</text>
+                    </view>
+                    <view class="history-content">
+                      <text class="history-text">{{historyItem.content}}</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              
               <!-- 图片打卡内容显示容器 -->
               <view class="image-checkin-container" wx:if="{{expandedDay === 1 && index === 0 && latestImageInput.imgSrc}}">
                 <view class="latest-checkin">
@@ -116,6 +137,85 @@
                         data-img-src="{{latestImageInput.imgSrc}}"
                       ></image>
                       <view class="image-hint">点击图片可放大查看</view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 图片打卡历史记录容器 -->
+              <view class="image-history-container" wx:if="{{expandedDay === 1 && index === 0 && imageInputHistory.length > 0}}">
+                <view class="history-title">图片打卡历史</view>
+                <view class="image-history-list">
+                  <view 
+                    wx:for="{{imageInputHistory}}" 
+                    wx:for-item="imageItem" 
+                    wx:key="timestamp"
+                    class="image-history-item"
+                  >
+                    <view class="history-header">
+                      <text class="history-index">照片 #{{imageItem.index}}</text>
+                      <text class="history-time">{{imageItem.time}}</text>
+                    </view>
+                    <view class="image-history-content">
+                      <image 
+                        class="history-image" 
+                        src="{{imageItem.imgSrc}}" 
+                        mode="aspectFill" 
+                        bindtap="previewImage" 
+                        data-img-src="{{imageItem.imgSrc}}"
+                      ></image>
+                      <view class="image-hint">点击查看大图</view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 语音打卡内容显示容器 -->
+              <view class="audio-checkin-container" wx:if="{{expandedDay === 1 && index === 0 && latestAudioInput.audioSrc}}">
+                <view class="latest-checkin">
+                  <view class="checkin-title">刚刚录制了语音</view>
+                  <view class="checkin-content">
+                    <!-- 显示语音播放器 -->
+                    <view class="audio-preview-box">
+                      <view class="audio-time">{{latestAudioInput.time}}</view>
+                      <view 
+                        class="audio-player {{currentPlayingAudio === latestAudioInput.audioSrc ? 'playing' : ''}}" 
+                        bindtap="playAudio" 
+                        data-audio-src="{{latestAudioInput.audioSrc}}"
+                      >
+                        <view class="audio-icon">🔊</view>
+                        <view class="audio-duration">{{latestAudioInput.duration}}</view>
+                        <view class="audio-status">{{currentPlayingAudio === latestAudioInput.audioSrc ? '播放中...' : '点击播放'}}</view>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 语音打卡历史记录容器 -->
+              <view class="audio-history-container" wx:if="{{expandedDay === 1 && index === 0 && audioInputHistory.length > 0}}">
+                <view class="history-title">语音打卡历史</view>
+                <view class="audio-history-list">
+                  <view 
+                    wx:for="{{audioInputHistory}}" 
+                    wx:for-item="audioItem" 
+                    wx:key="timestamp"
+                    class="audio-history-item"
+                  >
+                    <view class="history-header">
+                      <text class="history-index">语音 #{{audioItem.index}}</text>
+                      <text class="history-time">{{audioItem.time}}</text>
+                    </view>
+                    <view class="audio-history-content">
+                      <view 
+                        class="audio-player-history {{currentPlayingAudio === audioItem.audioSrc ? 'playing' : ''}}" 
+                        bindtap="playAudio" 
+                        data-audio-src="{{audioItem.audioSrc}}"
+                      >
+                        <view class="audio-icon">🔊</view>
+                        <view class="audio-duration">{{audioItem.duration}}</view>
+                        <view class="audio-status">{{currentPlayingAudio === audioItem.audioSrc ? '播放中...' : '点击播放'}}</view>
+                      </view>
                     </view>
                   </view>
                 </view>
@@ -189,7 +289,7 @@
                   <view class="record-content">
                     <text wx:if="{{record.method === 'text'}}" class="record-text">{{record.content}}</text>
                     <image wx:elif="{{record.method === 'image'}}" class="record-image" src="{{record.content}}" mode="aspectFill"></image>
-                    <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio="{{record.content}}">
+                    <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio-src="{{record.content}}">
                       <text class="audio-icon">🔊</text>
                       <text class="audio-text">播放</text>
                     </view>
