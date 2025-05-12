@@ -85,6 +85,19 @@
               </view>
               <view class="task-reason">为什么：{{item.reason}}</view>
               
+              <!-- 文字打卡记录显示在为什么下方 -->
+              <view class="text-record-display" wx:if="{{expandedDay === 1 && index === 0 && getTaskCheckinRecords(expandedDay, item.title).length > 0}}">
+                <view wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
+                      wx:for-item="record" 
+                      wx:key="timestamp" 
+                      wx:if="{{record.method === 'text'}}">
+                  <view class="text-record-content">
+                    <text class="record-text">{{record.content}}</text>
+                    <text class="record-timestamp">{{record.timeFormatted}}</text>
+                  </view>
+                </view>
+              </view>
+              
               <!-- 打卡按钮区域 - 三个圆角矩形按钮 -->
               <view class="quick-checkin-btns" wx:if="{{isDayUnlocked(expandedDay) || expandedDay === 1}}">
                 <view class="checkin-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">

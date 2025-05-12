@@ -668,4 +668,34 @@
   100% {
     box-shadow: 0 0 0 0 rgba(255, 48, 48, 0);
   }
+}
+
+/* 文字打卡记录显示在为什么下方的样式 */
+.text-record-display {
+  margin: 16rpx 0;
+  border-left: 4rpx solid #6E7BF2;
+  padding-left: 16rpx;
+}
+
+.text-record-content {
+  display: flex;
+  flex-direction: column;
+  background: #F5F7FF;
+  padding: 12rpx;
+  border-radius: 8rpx;
+  position: relative;
+}
+
+.text-record-content .record-text {
+  font-size: 24rpx;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 10rpx;
+  word-break: break-word;
+}
+
+.text-record-content .record-timestamp {
+  font-size: 20rpx;
+  color: #999;
+  text-align: right;
 } 
