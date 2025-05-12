@@ -596,6 +596,12 @@ Page({
   playAudio(e) {
     const { audioSrc } = e.currentTarget.dataset;
     
+    // 如果没有音频源，直接返回
+    if (!audioSrc) {
+      console.error('缺少音频源');
+      return;
+    }
+    
     // 如果有正在播放的语音，先停止它
     if (this.innerAudioContext) {
       this.innerAudioContext.stop();
