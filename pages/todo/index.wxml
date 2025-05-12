@@ -99,7 +99,7 @@
               </view>
               
               <!-- 任务打卡记录列表 -->
-              <view class="records-list" wx:if="{{getTaskCheckinRecords(expandedDay, item.title).length > 0 && isDayUnlocked(expandedDay)}}">
+              <view class="records-list" wx:if="{{getTaskCheckinRecords(expandedDay, item.title).length > 0 && (isDayUnlocked(expandedDay) || expandedDay === 1)}}">
                 <view 
                   wx:for="{{getTaskCheckinRecords(expandedDay, item.title)}}" 
                   wx:for-item="record"

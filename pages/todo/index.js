@@ -592,10 +592,14 @@ Page({
   
   // 格式化时间
   formatTime(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
     const hour = date.getHours();
     const minute = date.getMinutes();
     
-    return [hour, minute].map(this.formatNumber).join(':');
+    // 返回格式: MM-DD HH:MM
+    return `${this.formatNumber(month)}-${this.formatNumber(day)} ${this.formatNumber(hour)}:${this.formatNumber(minute)}`;
   },
   
   // 格式化数字

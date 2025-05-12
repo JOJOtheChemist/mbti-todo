@@ -218,7 +218,7 @@
   flex-direction: column;
 }
 
-/* 增加任务卡片宽度 */
+/* 增加任务卡片宽度和弹性 */
 .task-item {
   display: flex;
   flex-direction: column;
@@ -231,6 +231,9 @@
   background-color: #fff;
   margin-left: auto;
   margin-right: auto;
+  transition: all 0.3s ease;
+  min-height: 150rpx; /* 最小高度确保盒子不会太小 */
+  height: auto; /* 自动高度，根据内容自适应 */
 }
 
 .task-item:last-child {
@@ -278,6 +281,8 @@
   display: flex;
   flex-direction: column;
   margin-top: 16rpx;
+  border-top: 1rpx dashed #eee;
+  padding-top: 10rpx;
 }
 
 .record-item {
@@ -291,7 +296,7 @@
 .record-time {
   font-size: 20rpx;
   color: #999;
-  width: 80rpx;
+  width: 120rpx; /* 增加宽度以显示更多时间信息 */
   min-width: 80rpx;
   margin-right: 10rpx;
   padding-top: 4rpx;
@@ -307,6 +312,7 @@
   font-size: 24rpx;
   color: #333;
   line-height: 1.5;
+  word-wrap: break-word; /* 确保长文本能够换行 */
 }
 
 .record-image {
