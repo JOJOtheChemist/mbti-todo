@@ -85,64 +85,6 @@
               </view>
               <view class="task-reason">为什么：{{item.reason}}</view>
               
-              <!-- 文字打卡内容显示容器 -->
-              <view class="text-checkin-container" wx:if="{{expandedDay === 1 && index === 0 && latestTextInput.content}}">
-                <view class="latest-checkin">
-                  <view class="checkin-title">刚刚发了文字打卡内容</view>
-                  <view class="checkin-content">
-                    <!-- 显示打卡内容 -->
-                    <view class="date-content-box">
-                      <text class="date-label">{{latestTextInput.time}}</text>
-                      <text class="dash-separator">-</text>
-                      <text class="content-text">{{latestTextInput.content}}</text>
-                    </view>
-                  </view>
-                </view>
-              </view>
-              
-              <!-- 图片打卡内容显示容器 -->
-              <view class="image-checkin-container" wx:if="{{expandedDay === 1 && index === 0 && latestImageInput.imgSrc}}">
-                <view class="latest-checkin">
-                  <view class="checkin-title">刚刚上传了图片</view>
-                  <view class="checkin-content">
-                    <!-- 显示图片缩略图 -->
-                    <view class="image-preview-box">
-                      <view class="image-time">{{latestImageInput.time}}</view>
-                      <image 
-                        class="thumbnail-image" 
-                        src="{{latestImageInput.imgSrc}}" 
-                        mode="aspectFill" 
-                        bindtap="previewImage" 
-                        data-img-src="{{latestImageInput.imgSrc}}"
-                      ></image>
-                      <view class="image-hint">点击图片可放大查看</view>
-                    </view>
-                  </view>
-                </view>
-              </view>
-              
-              <!-- 语音打卡内容显示容器 -->
-              <view class="audio-checkin-container" wx:if="{{expandedDay === 1 && index === 0 && latestAudioInput.audioSrc}}">
-                <view class="latest-checkin">
-                  <view class="checkin-title">刚刚录制了语音</view>
-                  <view class="checkin-content">
-                    <!-- 显示语音播放器 -->
-                    <view class="audio-preview-box">
-                      <view class="audio-time">{{latestAudioInput.time}}</view>
-                      <view 
-                        class="audio-player {{currentPlayingAudio === latestAudioInput.audioSrc ? 'playing' : ''}}" 
-                        bindtap="playAudio" 
-                        data-audio-src="{{latestAudioInput.audioSrc}}"
-                      >
-                        <view class="audio-icon">🔊</view>
-                        <view class="audio-duration">{{latestAudioInput.duration}}</view>
-                        <view class="audio-status">{{currentPlayingAudio === latestAudioInput.audioSrc ? '播放中...' : '点击播放'}}</view>
-                      </view>
-                    </view>
-                  </view>
-                </view>
-              </view>
-              
               <!-- 统一的打卡历史记录容器 -->
               <view class="unified-history-container" wx:if="{{expandedDay === 1 && index === 0 && (textInputHistory.length > 0 || imageInputHistory.length > 0 || audioInputHistory.length > 0)}}">
                 <view class="history-title">打卡历史记录</view>

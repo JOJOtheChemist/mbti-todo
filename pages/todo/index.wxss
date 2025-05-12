@@ -784,26 +784,6 @@
   color: #FF6B6B;
 }
 
-/* 文字打卡内容容器 */
-.text-checkin-container {
-  margin: 15rpx 0;
-  border-radius: 10rpx;
-  background-color: #f9f9f9;
-  padding: 15rpx;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eaeaea;
-}
-
-/* 图片打卡内容容器 */
-.image-checkin-container {
-  margin: 15rpx 0;
-  border-radius: 10rpx;
-  background-color: #f9f9f9;
-  padding: 15rpx;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eaeaea;
-}
-
 .latest-checkin {
   width: 100%;
 }
@@ -884,9 +864,6 @@
   margin-top: 8rpx;
   text-align: center;
 }
-
-/* 任务内容样式 */
-/* ... existing code ... */
 
 /* 打卡记录容器 - 支持多个记录显示 */
 .checkin-records-container {
@@ -1023,291 +1000,13 @@
 }
 
 /* 文字打卡历史容器 */
-.text-history-container {
-  margin: 15rpx 0;
-  border-radius: 10rpx;
-  background-color: #f7f9ff;
-  padding: 15rpx;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e0e6fa;
-}
-
-.history-title {
-  font-size: 26rpx;
-  font-weight: 500;
-  color: #6E7BF2;
-  margin-bottom: 10rpx;
-  padding-bottom: 8rpx;
-  border-bottom: 1px dashed #d0d8ff;
-  text-align: center;
-}
-
-.history-list {
-  max-height: 300rpx;
-  overflow-y: auto;
-  padding-right: 8rpx;
-}
-
-.history-item {
-  background-color: white;
-  border-radius: 8rpx;
-  padding: 12rpx;
-  margin-bottom: 10rpx;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border-left: 3px solid #6E7BF2;
-}
-
-.history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6rpx;
-  padding-bottom: 4rpx;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.history-index {
-  font-size: 22rpx;
-  font-weight: 500;
-  color: #6E7BF2;
-}
-
-.history-time {
-  font-size: 20rpx;
-  color: #999;
-}
-
-.history-content {
-  padding: 6rpx 0;
-}
-
-.history-text {
-  font-size: 24rpx;
-  line-height: 1.5;
-  color: #333;
-  word-break: break-all;
-}
-
-/* 美化滚动条 */
-.history-list::-webkit-scrollbar {
-  width: 4rpx;
-}
-
-.history-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 2rpx;
-}
-
-.history-list::-webkit-scrollbar-thumb {
-  background: #d0d8ff;
-  border-radius: 2rpx;
-}
-
-.history-list::-webkit-scrollbar-thumb:hover {
-  background: #b0b8ff;
-}
+/* 删除text-history-container及相关样式 */
 
 /* 图片打卡历史容器 */
-.image-history-container {
-  margin: 15rpx 0;
-  border-radius: 10rpx;
-  background-color: #f3f9f3;
-  padding: 15rpx;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #d8e8d8;
-}
-
-.image-history-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 15rpx;
-  max-height: 500rpx;
-  overflow-y: auto;
-  padding: 10rpx 5rpx;
-}
-
-.image-history-item {
-  width: 45%;
-  background-color: white;
-  border-radius: 8rpx;
-  padding: 10rpx;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  border-top: 3px solid #4CAF50;
-  margin-bottom: 10rpx;
-}
-
-.image-history-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 6rpx;
-}
-
-.history-image {
-  width: 150rpx;
-  height: 150rpx;
-  border-radius: 6rpx;
-  object-fit: cover;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-}
-
-.history-image:active {
-  transform: scale(0.95);
-}
-
-/* 美化滚动条 - 图片历史 */
-.image-history-list::-webkit-scrollbar {
-  width: 4rpx;
-}
-
-.image-history-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 2rpx;
-}
-
-.image-history-list::-webkit-scrollbar-thumb {
-  background: #c8e6c9;
-  border-radius: 2rpx;
-}
-
-.image-history-list::-webkit-scrollbar-thumb:hover {
-  background: #a5d6a7;
-}
-
-/* 语音打卡容器 */
-.audio-checkin-container {
-  margin: 15rpx 0;
-  border-radius: 10rpx;
-  background-color: #fff0f0;
-  padding: 15rpx;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #ffe0e0;
-}
-
-.audio-preview-box {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 5rpx 0;
-}
-
-.audio-time {
-  font-size: 24rpx;
-  color: #666;
-  margin-bottom: 10rpx;
-}
-
-.audio-player {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  padding: 16rpx 20rpx;
-  border-radius: 40rpx;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.audio-player.playing {
-  background-color: #ffebeb;
-  box-shadow: 0 0 0 4rpx rgba(255, 107, 107, 0.2);
-  animation: audioPulse 2s infinite;
-}
-
-.audio-icon {
-  font-size: 36rpx;
-  color: #FF6B6B;
-  margin-right: 12rpx;
-}
-
-.audio-duration {
-  font-size: 24rpx;
-  color: #666;
-  margin-right: 16rpx;
-}
-
-.audio-status {
-  font-size: 22rpx;
-  color: #999;
-}
+/* 删除image-history-container及相关样式 */
 
 /* 语音打卡历史容器 */
-.audio-history-container {
-  margin: 15rpx 0;
-  border-radius: 10rpx;
-  background-color: #fff0f0;
-  padding: 15rpx;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border: 1px solid #ffe0e0;
-}
-
-.audio-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10rpx;
-  max-height: 400rpx;
-  overflow-y: auto;
-  padding: 5rpx;
-}
-
-.audio-history-item {
-  background-color: white;
-  border-radius: 8rpx;
-  padding: 12rpx;
-  margin-bottom: 8rpx;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border-left: 3px solid #FF6B6B;
-}
-
-.audio-history-content {
-  margin-top: 8rpx;
-}
-
-.audio-player-history {
-  display: flex;
-  align-items: center;
-  background-color: #fff8f8;
-  padding: 12rpx 16rpx;
-  border-radius: 30rpx;
-  transition: all 0.2s ease;
-}
-
-.audio-player-history.playing {
-  background-color: #ffebeb;
-  animation: audioPulse 2s infinite;
-}
-
-@keyframes audioPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 6rpx rgba(255, 107, 107, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
-  }
-}
-
-/* 美化滚动条 - 语音历史 */
-.audio-history-list::-webkit-scrollbar {
-  width: 4rpx;
-}
-
-.audio-history-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 2rpx;
-}
-
-.audio-history-list::-webkit-scrollbar-thumb {
-  background: #ffcccc;
-  border-radius: 2rpx;
-}
-
-.audio-history-list::-webkit-scrollbar-thumb:hover {
-  background: #ff9999;
-}
+/* 删除audio-history-container及相关样式 */
 
 /* 统一历史记录容器 */
 .unified-history-container {
@@ -1420,25 +1119,6 @@
   word-break: break-all;
 }
 
-/* 美化滚动条 */
-.unified-history-list::-webkit-scrollbar {
-  width: 4rpx;
-}
-
-.unified-history-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 2rpx;
-}
-
-.unified-history-list::-webkit-scrollbar-thumb {
-  background: #ddd;
-  border-radius: 2rpx;
-}
-
-.unified-history-list::-webkit-scrollbar-thumb:hover {
-  background: #ccc;
-}
-
 /* 统一容器中的图片样式 */
 .unified-history-item .history-image {
   width: 160rpx;
@@ -1477,10 +1157,53 @@
   animation: audioPulse 2s infinite;
 }
 
-/* 按打卡时间顺序排序历史记录 */
-.unified-history-list {
-  display: flex;
-  flex-direction: column-reverse; /* 最新的记录显示在最顶部 */
+@keyframes audioPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6rpx rgba(255, 107, 107, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+  }
+}
+
+/* 美化滚动条 */
+.unified-history-list::-webkit-scrollbar {
+  width: 4rpx;
+}
+
+.unified-history-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2rpx;
+}
+
+.unified-history-list::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 2rpx;
+}
+
+.unified-history-list::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* 音频相关样式 */
+.audio-icon {
+  font-size: 36rpx;
+  color: #FF6B6B;
+  margin-right: 12rpx;
+}
+
+.audio-duration {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 16rpx;
+}
+
+.audio-status {
+  font-size: 22rpx;
+  color: #999;
 }
 
 /* ... existing code ... */ 

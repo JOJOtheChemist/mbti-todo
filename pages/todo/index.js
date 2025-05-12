@@ -19,13 +19,9 @@ Page({
     },
     touchStartX: 0, // 记录触摸开始位置
     isRecording: false, // 是否正在录音
-    latestTextInput: {}, // 存储最新文字输入
-    latestImageInput: {}, // 存储最新图片输入
-    latestAudioInput: {}, // 存储最新语音输入
     textInputHistory: [], // 存储所有文字打卡历史
     imageInputHistory: [], // 存储所有图片打卡历史
     audioInputHistory: [], // 存储所有语音打卡历史
-    isPreviewVisible: false, // 是否显示图片预览
     currentPlayingAudio: '', // 当前正在播放的语音
     // 预设7天的任务
     presetTasks: [
@@ -218,17 +214,6 @@ Page({
           console.error('读取打卡记录失败', e);
         }
         
-        // 读取最新文字输入
-        let latestTextInput = {};
-        try {
-          const textInputData = wx.getStorageSync('latestTextInput');
-          if (textInputData) {
-            latestTextInput = JSON.parse(textInputData);
-          }
-        } catch (e) {
-          console.error('读取最新文字输入失败', e);
-        }
-        
         // 读取文字输入历史
         let textInputHistory = [];
         try {
@@ -240,17 +225,6 @@ Page({
           console.error('读取文字历史记录失败', e);
         }
         
-        // 读取最新图片输入
-        let latestImageInput = {};
-        try {
-          const imageInputData = wx.getStorageSync('latestImageInput');
-          if (imageInputData) {
-            latestImageInput = JSON.parse(imageInputData);
-          }
-        } catch (e) {
-          console.error('读取最新图片输入失败', e);
-        }
-        
         // 读取图片输入历史
         let imageInputHistory = [];
         try {
@@ -260,17 +234,6 @@ Page({
           }
         } catch (e) {
           console.error('读取图片历史记录失败', e);
-        }
-        
-        // 读取最新语音输入
-        let latestAudioInput = {};
-        try {
-          const audioInputData = wx.getStorageSync('latestAudioInput');
-          if (audioInputData) {
-            latestAudioInput = JSON.parse(audioInputData);
-          }
-        } catch (e) {
-          console.error('读取最新语音输入失败', e);
         }
         
         // 读取语音输入历史
@@ -295,9 +258,6 @@ Page({
           allDayTasks: allTasks,
           daysCompleted,
           checkinRecords,
-          latestTextInput,
-          latestImageInput,
-          latestAudioInput,
           textInputHistory,
           imageInputHistory,
           audioInputHistory
@@ -706,88 +666,58 @@ Page({
       });
     }
     
-    // 如果是第一天的第一个任务 且 是文字打卡，保存用户输入
-    let latestTextInput = this.data.latestTextInput || {};
+    // 获取各类历史记录
     let textInputHistory = this.data.textInputHistory || [];
-    
-    if (expandedDay === 1 && this.data.dayTasks[0]?.title === activeTask.title && activeCheckinMethod === 'text') {
-      latestTextInput = {
-        content: checkinContent,
-        time: formattedTime,
-        timestamp: timestamp
-      };
-      
-      // 添加到历史记录数组中，带上序号
-      const newHistoryItem = {
-        content: checkinContent,
-        time: formattedTime,
-        timestamp: timestamp,
-        index: textInputHistory.length + 1 // 添加序号
-      };
-      
-      textInputHistory.unshift(newHistoryItem); // 新记录放在最前面
-    }
-    
-    // 如果是第一天的第一个任务 且 是图片打卡，保存用户上传的图片
-    let latestImageInput = this.data.latestImageInput || {};
     let imageInputHistory = this.data.imageInputHistory || [];
-    
-    if (expandedDay === 1 && this.data.dayTasks[0]?.title === activeTask.title && activeCheckinMethod === 'image') {
-      latestImageInput = {
-        imgSrc: checkinContent,
-        time: formattedTime,
-        timestamp: timestamp
-      };
-      
-      // 添加到图片历史记录数组中，带上序号
-      const newImageItem = {
-        imgSrc: checkinContent,
-        time: formattedTime,
-        timestamp: timestamp,
-        index: imageInputHistory.length + 1 // 添加序号
-      };
-      
-      imageInputHistory.unshift(newImageItem); // 新记录放在最前面
-    }
-    
-    // 如果是第一天的第一个任务 且 是语音打卡，保存用户录制的语音
-    let latestAudioInput = this.data.latestAudioInput || {};
     let audioInputHistory = this.data.audioInputHistory || [];
     
-    if (expandedDay === 1 && this.data.dayTasks[0]?.title === activeTask.title && activeCheckinMethod === 'audio') {
-      // 估算语音时长（实际项目中可能需要更精确的方法）
-      const duration = this.estimateAudioDuration(checkinContent);
-      
-      latestAudioInput = {
-        audioSrc: checkinContent,
-        time: formattedTime,
-        timestamp: timestamp,
-        duration: duration
-      };
-      
-      // 添加到语音历史记录数组中，带上序号
-      const newAudioItem = {
-        audioSrc: checkinContent,
-        time: formattedTime,
-        timestamp: timestamp,
-        duration: duration,
-        index: audioInputHistory.length + 1 // 添加序号
-      };
-      
-      audioInputHistory.unshift(newAudioItem); // 新记录放在最前面
+    if (expandedDay === 1 && this.data.dayTasks[0]?.title === activeTask.title) {
+      // 根据打卡方式，添加到对应的历史记录中
+      if (activeCheckinMethod === 'text') {
+        // 添加到文字历史记录
+        const newHistoryItem = {
+          content: checkinContent,
+          time: formattedTime,
+          timestamp: timestamp,
+          index: textInputHistory.length + 1 // 添加序号
+        };
+        textInputHistory.unshift(newHistoryItem);
+      } 
+      else if (activeCheckinMethod === 'image') {
+        // 添加到图片历史记录
+        const newImageItem = {
+          imgSrc: checkinContent,
+          time: formattedTime,
+          timestamp: timestamp,
+          index: imageInputHistory.length + 1 // 添加序号
+        };
+        imageInputHistory.unshift(newImageItem);
+      }
+      else if (activeCheckinMethod === 'audio') {
+        // 估算语音时长
+        const duration = this.estimateAudioDuration(checkinContent);
+        
+        // 添加到语音历史记录
+        const newAudioItem = {
+          audioSrc: checkinContent,
+          time: formattedTime,
+          timestamp: timestamp,
+          duration: duration,
+          index: audioInputHistory.length + 1 // 添加序号
+        };
+        audioInputHistory.unshift(newAudioItem);
+      }
     }
     
-    // 先更新数据，确保界面能够更新
+    // 更新数据
     this.setData({
       checkinRecords: checkinRecords,
       daysCompleted: newDaysCompleted,
-      latestTextInput: latestTextInput,
-      latestImageInput: latestImageInput,
-      latestAudioInput: latestAudioInput,
       textInputHistory: textInputHistory,
       imageInputHistory: imageInputHistory,
       audioInputHistory: audioInputHistory,
-      isCheckinModalVisible: false  // 直接关闭模态框
+      isCheckinModalVisible: false, // 关闭模态框
+      checkinContent: "" // 清空内容
     });
     
     // 保存到本地存储
@@ -801,34 +731,16 @@ Page({
       data: JSON.stringify(newDaysCompleted)
     });
     
-    // 保存最新文字输入
-    wx.setStorage({
-      key: 'latestTextInput',
-      data: JSON.stringify(latestTextInput)
-    });
-    
     // 保存文字输入历史
     wx.setStorage({
       key: 'textInputHistory',
       data: JSON.stringify(textInputHistory)
     });
     
-    // 保存最新图片输入
-    wx.setStorage({
-      key: 'latestImageInput',
-      data: JSON.stringify(latestImageInput)
-    });
-    
     // 保存图片输入历史
     wx.setStorage({
       key: 'imageInputHistory',
       data: JSON.stringify(imageInputHistory)
-    });
-    
-    // 保存最新语音输入
-    wx.setStorage({
-      key: 'latestAudioInput',
-      data: JSON.stringify(latestAudioInput)
     });
     
     // 保存语音输入历史
