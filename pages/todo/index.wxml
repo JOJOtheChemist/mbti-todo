@@ -146,7 +146,7 @@
               <!-- 快速打卡按钮区域 -->
               <view class="quick-checkin-buttons" wx:if="{{(isDayUnlocked(expandedDay) || expandedDay === 1 || unlockModeStates[expandedDay]) && !isTaskCompleted(expandedDay, index)}}">
                 <view class="checkin-grid">
-                  <view class="checkin-btn tomato-btn">
+                  <view class="checkin-btn tomato-btn" bindtap="startTomatoTimer" data-task="{{item}}">
                     <text class="btn-label">番茄打卡</text>
                   </view>
                   <view class="checkin-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
@@ -158,6 +158,18 @@
                   <view class="checkin-btn audio-btn {{isRecording ? 'recording' : ''}}" bindtap="openAudioCheckin" data-task="{{item}}">
                     <text class="btn-label">语音打卡</text>
                   </view>
+                </view>
+              </view>
+              
+              <!-- 番茄计时器遮罩层 -->
+              <view class="tomato-overlay {{showTomatoTimer ? 'visible' : ''}}" bindtap="toggleTomatoTimer">
+                <view class="tomato-circle {{!isTomatoRunning && isTomatoStarted && tomatoTimeLeft === 5 ? 'completed' : ''}}">
+                  <text class="tomato-countdown" wx:if="{{!(isTomatoStarted && !isTomatoRunning && tomatoTimeLeft === 5)}}">{{tomatoTimeLeft}}</text>
+                  <text class="tomato-text">
+                    {{!isTomatoStarted ? '开始' : 
+                      isTomatoRunning ? '专注中' : 
+                      tomatoTimeLeft === 5 ? '恭喜完成' : '暂停'}}
+                  </text>
                 </view>
               </view>
               

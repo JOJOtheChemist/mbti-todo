@@ -1384,4 +1384,67 @@
   100% {
     transform: scale(1);
   }
+}
+
+/* 番茄计时器样式 */
+.tomato-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.tomato-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tomato-circle {
+  width: 200rpx;
+  height: 200rpx;
+  background-color: rgba(255, 107, 107, 0.9);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(255, 107, 107, 0.3);
+  transition: all 0.3s ease;
+}
+
+.tomato-countdown {
+  color: white;
+  font-size: 72rpx;
+  font-weight: bold;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+.tomato-text {
+  color: white;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.tomato-circle.completed .tomato-text {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.tomato-circle.completed {
+  background-color: rgba(76, 175, 80, 0.9);
+  box-shadow: 0 4rpx 20rpx rgba(76, 175, 80, 0.3);
+}
+
+.tomato-circle:active {
+  transform: scale(0.95);
 } 

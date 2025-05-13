@@ -190,6 +190,11 @@ Page({
       6: false,
       7: false
     },
+    showTomatoTimer: false,
+    isTomatoRunning: false,
+    tomatoTimeLeft: 5,
+    tomatoTimer: null,
+    isTomatoStarted: false, // 新增：是否已经开始计时
   },
 
   onLoad() {
@@ -1116,5 +1121,75 @@ Page({
       return day2Tasks[taskIndex].reason;
     }
     return '';
+  },
+
+  startTomatoTimer(e) {
+    const task = e.currentTarget.dataset.task;
+    this.setData({
+      showTomatoTimer: true,
+      isTomatoRunning: false,
+      isTomatoStarted: false,
+      tomatoTimeLeft: 5
+    });
+  },
+
+  startCountdown() {
+    // 清除可能存在的旧定时器
+    if (this.data.tomatoTimer) {
+      clearInterval(this.data.tomatoTimer);
+    }
+
+    // 创建新的定时器
+    const timer = setInterval(() => {
+      if (this.data.tomatoTimeLeft > 0) {
+        this.setData({
+          tomatoTimeLeft: this.data.tomatoTimeLeft - 1
+        });
+      } else {
+        // 倒计时结束
+        clearInterval(timer);
+        this.setData({
+          isTomatoRunning: false,
+          isTomatoStarted: true,
+          tomatoTimeLeft: 5,
+          showTomatoTimer: true
+        });
+      }
+    }, 1000);
+
+    this.setData({
+      tomatoTimer: timer
+    });
+  },
+
+  toggleTomatoTimer() {
+    if (!this.data.isTomatoStarted) {
+      // 如果还没开始，则开始计时
+      this.setData({
+        isTomatoRunning: true,
+        isTomatoStarted: true
+      });
+      this.startCountdown();
+    } else if (this.data.isTomatoRunning) {
+      // 如果正在运行，则暂停计时
+      clearInterval(this.data.tomatoTimer);
+      this.setData({
+        isTomatoRunning: false,
+        tomatoTimer: null
+      });
+    } else if (this.data.tomatoTimeLeft < 5) {
+      // 如果已经暂停，则继续计时
+      this.setData({
+        isTomatoRunning: true
+      });
+      this.startCountdown();
+    } else {
+      // 如果计时结束，则关闭遮罩层
+      this.setData({
+        showTomatoTimer: false,
+        tomatoTimeLeft: 5,
+        isTomatoStarted: false
+      });
+    }
   },
 }) 
