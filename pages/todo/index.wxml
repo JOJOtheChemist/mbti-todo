@@ -87,7 +87,7 @@
             <view class="task-content">
               <view class="task-header">
                 <view class="task-title">
-                  <text class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title) || unlockModeStates[expandedDay]}}">已完成</text>
+                  <text class="completed-tag" wx:if="{{item.records && item.records.length > 0}}">已完成</text>
                   {{item.title}}
                 </view>
                 <view class="task-category">{{item.type}} · {{item.difficulty}}</view>

@@ -454,10 +454,27 @@ Page({
   isDayUnlocked(day) {
     // 确保第1天始终解锁
     if (day === 1) return true;
-    const { currentDay, unlockModeStates } = this.data;
+    
+    const { currentDay, unlockModeStates, checkinRecords } = this.data;
+    
     // 如果当前天数在解锁模式下，返回true
     if (unlockModeStates[day]) return true;
-    return day <= currentDay;
+    
+    // 如果天数超过当前天数，返回false
+    if (day > currentDay) return false;
+    
+    // 获取前一天的任务
+    const prevDayTasks = this.data.allDayTasks[day - 2]; // 前一天的任务
+    if (!prevDayTasks) return false;
+    
+    // 检查前一天的所有任务是否都有打卡记录
+    const allTasksCompleted = prevDayTasks.every(task => {
+      const taskKey = `day${day - 1}_${task.title}`;
+      const records = checkinRecords[taskKey] || [];
+      return records.length > 0; // 只要有一条记录就算完成
+    });
+    
+    return allTasksCompleted;
   },
   
   // 获取天数状态文本
