@@ -1,0 +1,22 @@
+<view class="days-nav-container">
+  <view class="day-arrow {{currentDay === 1 ? 'disabled' : ''}}" bindtap="navigatePrevDay">
+    <text class="arrow-icon">←</text>
+  </view>
+  
+  <view class="days-nav">
+    <view 
+      wx:for="{{7}}" 
+      wx:key="*this"
+      class="day-item {{currentDay === index + 1 ? 'active' : ''}} {{!isDayUnlocked(index + 1) ? 'locked' : ''}}"
+      bindtap="handleDayTap"
+      data-day="{{index + 1}}"
+    >
+      <text class="day-text">第{{index + 1}}天</text>
+      <view class="day-indicator {{isDayCompleted(index + 1) ? 'completed' : ''}}"></view>
+    </view>
+  </view>
+  
+  <view class="day-arrow {{currentDay === 7 ? 'disabled' : ''}}" bindtap="navigateNextDay">
+    <text class="arrow-icon">→</text>
+  </view>
+</view> 

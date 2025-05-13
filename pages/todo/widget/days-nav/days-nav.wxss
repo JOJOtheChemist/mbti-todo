@@ -1,1 +1,79 @@
-s
+.days-nav-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.day-arrow {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6E7BF2;
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+
+.day-arrow.disabled {
+  color: #CCC;
+}
+
+.arrow-icon {
+  font-weight: bold;
+}
+
+.days-nav {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 16rpx;
+  padding: 24rpx 40rpx;
+  margin: 0 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.day-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80rpx;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.day-text {
+  font-size: 20rpx;
+  color: #333;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.day-indicator {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background-color: #E0E0E0;
+  margin-top: 8rpx;
+}
+
+.day-item.active .day-indicator {
+  background-color: #6E7BF2;
+}
+
+.day-indicator.completed {
+  background-color: #4CAF50;
+}
+
+.day-item.active .day-text {
+  color: #6E7BF2;
+  font-weight: bold;
+}
+
+.day-item.locked .day-text {
+  color: #CCC;
+}

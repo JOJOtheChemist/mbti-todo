@@ -1,6 +1,9 @@
 {
   "navigationBarTitleText": "7天成长训练",
   "usingComponents": {
-    "history-container": "./widget/history-container/history-container"
+    "history-container": "./widget/history-container",
+    "days-nav": "./widget/days-nav/days-nav",
+    "task-card": "./widget/task-card/task-card",
+    "unlock-status": "./widget/unlock-status/unlock-status"
   }
 } 

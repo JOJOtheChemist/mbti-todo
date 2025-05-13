@@ -1,51 +1,145 @@
-.task-card {
-  background: #fff;
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
-  margin-bottom: 32rpx;
-  padding: 28rpx 24rpx 20rpx 24rpx;
+.task-item {
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 15rpx;
   position: relative;
-  transition: box-shadow 0.2s;
+  width: 500rpx;
+  box-shadow: 0 2rpx 5rpx rgba(0,0,0,0.05);
+  background-color: #fff;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s ease;
+  min-height: 150rpx;
+  height: auto;
 }
-.task-card.completed {
+
+.task-item:last-child {
+  margin-bottom: 0;
+}
+
+.task-item.locked-mode {
   opacity: 0.7;
 }
-.task-card.locked-mode {
-  filter: grayscale(0.7);
-  background: #f5f5f5;
+
+.task-content {
+  flex: 1;
+  width: 100%;
 }
+
 .task-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8rpx;
+  margin-bottom: 10rpx;
 }
+
 .task-title {
   font-size: 28rpx;
   font-weight: bold;
   color: #333;
 }
+
 .task-category {
-  font-size: 20rpx;
-  color: #888;
-  background: #f0f0f0;
-  border-radius: 8rpx;
-  padding: 2rpx 12rpx;
-}
-.task-reason {
   font-size: 22rpx;
-  color: #666;
-  margin-bottom: 16rpx;
+  color: #999;
 }
+
+.task-reason {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+/* 打卡按钮区域 */
+.quick-checkin-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15rpx;
+  margin-bottom: 10rpx;
+}
+
+.checkin-btn {
+  flex: 1;
+  margin: 0 5rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  color: white;
+}
+
+.text-btn {
+  background-color: #6E7BF2;
+}
+
+.image-btn {
+  background-color: #4CAF50;
+}
+
+.audio-btn {
+  background-color: #FF9800;
+}
+
+.btn-label {
+  font-size: 24rpx;
+}
+
+/* 锁定状态提示 */
+.locked-hint {
+  background-color: #F5F5F5;
+  padding: 10rpx;
+  border-radius: 8rpx;
+  margin-top: 10rpx;
+}
+
+.locked-checkin-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.locked-checkin-btn {
+  flex: 1;
+  margin: 0 3rpx;
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6rpx;
+  background-color: #DDD;
+}
+
+.locked-checkin-btn text {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.locked-text {
+  display: block;
+  font-size: 22rpx;
+  color: #FF0000;
+  text-align: center;
+  margin-top: 6rpx;
+}
+
+/* 已完成标志 */
 .completion-status {
   position: absolute;
-  top: 20rpx;
-  right: 20rpx;
+  top: 10rpx;
+  right: 10rpx;
 }
+
 .completed-tag {
-  padding: 4rpx 12rpx;
-  border-radius: 20rpx;
-  font-size: 20rpx;
   background-color: #4CAF50;
+  border-radius: 16rpx;
+  padding: 4rpx 12rpx;
+}
+
+.completed-tag text {
+  font-size: 20rpx;
   color: white;
 } 

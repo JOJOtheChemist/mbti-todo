@@ -1070,14 +1070,20 @@ Page({
     return allRecords.sort((a, b) => b.timestamp - a.timestamp);
   },
   
-  // 解锁第2天
-  unlockDay2() {
+  // 处理解锁事件
+  handleUnlockDay(e) {
+    const { day } = e.detail;
+    this.unlockDay(day);
+  },
+
+  // 解锁指定天数
+  unlockDay(day) {
     // 更新当前天数和查看天数
-    const dayTasks = this.data.allDayTasks[1]; // 获取第2天任务
+    const dayTasks = this.data.allDayTasks[day - 1]; // 获取对应天数的任务
     
     this.setData({
-      currentDay: 2,
-      expandedDay: 2,
+      currentDay: day,
+      expandedDay: day,
       dayTasks: dayTasks
     });
     
@@ -1087,22 +1093,22 @@ Page({
       data: {
         mbtiType: this.data.mbtiType,
         startDate: this.data.startDate,
-        currentDay: 2,
+        currentDay: day,
         tasks: this.data.tasks
       }
     });
     
     // 显示成功消息
     wx.showToast({
-      title: '第2天已解锁',
+      title: `第${day}天已解锁`,
       icon: 'success',
       duration: 1500,
       success: () => {
         // 延迟后再次设置expandedDay，确保视图更新
         setTimeout(() => {
-          if (this.data.expandedDay !== 2) {
+          if (this.data.expandedDay !== day) {
             this.setData({
-              expandedDay: 2,
+              expandedDay: day,
               dayTasks: dayTasks
             });
           }

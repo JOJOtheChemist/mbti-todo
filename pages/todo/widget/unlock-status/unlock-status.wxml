@@ -1,0 +1,5 @@
+<view class="unlock-status">
+  <view class="unlock-btn" bindtap="unlockNextDay" wx:if="{{currentDay < 7}}">
+    解锁第{{currentDay + 1}}天
+  </view>
+</view> 

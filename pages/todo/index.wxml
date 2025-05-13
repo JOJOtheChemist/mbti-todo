@@ -55,7 +55,10 @@
     </view>
   </view>
   
-  <unlock-status />
+  <unlock-status 
+    currentDay="{{currentDay}}" 
+    bind:unlock="handleUnlockDay"
+  />
   
   <!-- 滑动容器 - 绑定触摸事件 -->
   <view 
