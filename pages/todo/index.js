@@ -195,6 +195,8 @@ Page({
     tomatoTimeLeft: 5,
     tomatoTimer: null,
     isTomatoStarted: false, // 新增：是否已经开始计时
+    isRecordsExpanded: false,
+    expandedRecords: {}, // 存储每个任务的展开状态
   },
 
   onLoad() {
@@ -308,7 +310,9 @@ Page({
           audioInputHistory,
           task2History,
           task3History,
-          combinedHistory
+          combinedHistory,
+          'unlockModeStates.1': true, // 确保第一天始终解锁
+          expandedRecords: {} // 初始化展开状态
         });
       },
       fail: () => {
@@ -325,7 +329,9 @@ Page({
           allDayTasks: this.data.presetTasks,
           combinedHistory: [], // 初始化空的合并历史
           task2History: [], // 初始化任务2历史
-          task3History: [] // 初始化任务3历史
+          task3History: [], // 初始化任务3历史
+          'unlockModeStates.1': true, // 确保第一天始终解锁
+          expandedRecords: {} // 初始化展开状态
         });
       }
     });
@@ -758,128 +764,23 @@ Page({
         timestamp: timestamp
       });
     }
-    
-    // 获取各类历史记录
-    let textInputHistory = this.data.textInputHistory || [];
-    let imageInputHistory = this.data.imageInputHistory || [];
-    let audioInputHistory = this.data.audioInputHistory || [];
-    let task2History = this.data.task2History || [];
-    let task3History = this.data.task3History || [];
-    
-    if (expandedDay === 1) {
-      // 第一天的第一个任务
-      if (this.data.dayTasks[0]?.title === activeTask.title) {
-        // 根据打卡方式，添加到对应的历史记录中
-        if (activeCheckinMethod === 'text') {
-          // 添加到文字历史记录
-          const newHistoryItem = {
-            content: checkinContent,
-            time: formattedTime,
-            timestamp: timestamp,
-            index: textInputHistory.length + 1, // 添加序号
-            type: 'text' // 添加类型标记
-          };
-          textInputHistory.unshift(newHistoryItem);
-        } 
-        else if (activeCheckinMethod === 'image') {
-          // 添加到图片历史记录
-          const newImageItem = {
-            imgSrc: checkinContent,
-            time: formattedTime,
-            timestamp: timestamp,
-            index: imageInputHistory.length + 1, // 添加序号
-            type: 'image' // 添加类型标记
-          };
-          imageInputHistory.unshift(newImageItem);
-        }
-        else if (activeCheckinMethod === 'audio') {
-          // 估算语音时长
-          const duration = this.estimateAudioDuration(checkinContent);
-          
-          // 添加到语音历史记录
-          const newAudioItem = {
-            audioSrc: checkinContent,
-            time: formattedTime,
-            timestamp: timestamp,
-            duration: duration,
-            index: audioInputHistory.length + 1, // 添加序号
-            type: 'audio' // 添加类型标记
-          };
-          audioInputHistory.unshift(newAudioItem);
-        }
-        
-        // 更新合并的历史记录
-        const combinedHistory = this.getCombinedHistory(textInputHistory, imageInputHistory, audioInputHistory);
-        
-        this.setData({
-          combinedHistory
-        });
-      }
-      // 第一天的第二个任务
-      else if (this.data.dayTasks[1]?.title === activeTask.title) {
-        // 创建该任务的历史记录
-        const newTaskHistoryItem = {
-          content: checkinContent,
-          time: formattedTime,
-          timestamp: timestamp,
-          index: task2History.length + 1, // 添加序号
-          type: activeCheckinMethod, // 添加类型标记
-          method: activeCheckinMethod,
-          // 针对不同类型添加不同字段
-          ...(activeCheckinMethod === 'image' ? { imgSrc: checkinContent } : {}),
-          ...(activeCheckinMethod === 'audio' ? { 
-            audioSrc: checkinContent,
-            duration: this.estimateAudioDuration(checkinContent)
-          } : {})
+
+    // 更新当前任务列表中的记录
+    const updatedDayTasks = this.data.dayTasks.map(task => {
+      if (task.title === activeTask.title) {
+        return {
+          ...task,
+          records: checkinRecords[taskKey] || []
         };
-        
-        // 添加到任务2的历史记录
-        task2History.unshift(newTaskHistoryItem);
-        
-        // 保存到本地存储
-        wx.setStorage({
-          key: 'task2History',
-          data: JSON.stringify(task2History)
-        });
       }
-      // 第一天的第三个任务
-      else if (this.data.dayTasks[2]?.title === activeTask.title) {
-        // 创建该任务的历史记录
-        const newTaskHistoryItem = {
-          content: checkinContent,
-          time: formattedTime,
-          timestamp: timestamp,
-          index: task3History.length + 1, // 添加序号
-          type: activeCheckinMethod, // 添加类型标记
-          method: activeCheckinMethod,
-          // 针对不同类型添加不同字段
-          ...(activeCheckinMethod === 'image' ? { imgSrc: checkinContent } : {}),
-          ...(activeCheckinMethod === 'audio' ? { 
-            audioSrc: checkinContent,
-            duration: this.estimateAudioDuration(checkinContent)
-          } : {})
-        };
-        
-        // 添加到任务3的历史记录
-        task3History.unshift(newTaskHistoryItem);
-        
-        // 保存到本地存储
-        wx.setStorage({
-          key: 'task3History',
-          data: JSON.stringify(task3History)
-        });
-      }
-    }
+      return task;
+    });
     
     // 更新数据
     this.setData({
       checkinRecords: checkinRecords,
       daysCompleted: newDaysCompleted,
-      textInputHistory: textInputHistory,
-      imageInputHistory: imageInputHistory,
-      audioInputHistory: audioInputHistory,
-      task2History: task2History,
-      task3History: task3History,
+      dayTasks: updatedDayTasks,
       isCheckinModalVisible: false, // 关闭模态框
       checkinContent: "" // 清空内容
     });
@@ -893,24 +794,6 @@ Page({
     wx.setStorage({
       key: 'daysCompleted',
       data: JSON.stringify(newDaysCompleted)
-    });
-    
-    // 保存文字输入历史
-    wx.setStorage({
-      key: 'textInputHistory',
-      data: JSON.stringify(textInputHistory)
-    });
-    
-    // 保存图片输入历史
-    wx.setStorage({
-      key: 'imageInputHistory',
-      data: JSON.stringify(imageInputHistory)
-    });
-    
-    // 保存语音输入历史
-    wx.setStorage({
-      key: 'audioInputHistory',
-      data: JSON.stringify(audioInputHistory)
     });
     
     wx.showToast({
@@ -1191,5 +1074,16 @@ Page({
         isTomatoStarted: false
       });
     }
+  },
+
+  toggleRecords(e) {
+    const { day, taskTitle } = e.currentTarget.dataset;
+    const key = `day${day}_${taskTitle}`;
+    const expandedRecords = { ...this.data.expandedRecords };
+    expandedRecords[key] = !expandedRecords[key];
+    
+    this.setData({
+      expandedRecords
+    });
   },
 }) 

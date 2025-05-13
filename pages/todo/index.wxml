@@ -86,7 +86,10 @@
           >
             <view class="task-content">
               <view class="task-header">
-                <view class="task-title">{{item.title}}</view>
+                <view class="task-title">
+                  <text class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title) || unlockModeStates[expandedDay]}}">已完成</text>
+                  {{item.title}}
+                </view>
                 <view class="task-category">{{item.type}} · {{item.difficulty}}</view>
               </view>
               <view class="task-reason">为什么：{{item.reason}}</view>
@@ -94,57 +97,42 @@
                 <text>完成前一天所有任务可解锁</text>
               </view>
               
-              <!-- 解锁模式下显示当天的内容 -->
-              <block wx:if="{{unlockModeStates[expandedDay] && !isDayUnlocked(expandedDay) && expandedDay !== 1}}">
-                <!-- 显示当天的历史记录 -->
-                <history-container 
-                  wx:if="{{textInputHistory.length > 0 || imageInputHistory.length > 0 || audioInputHistory.length > 0}}"
-                  title="打卡历史记录"
-                  mixedRecords="{{combinedHistory}}"
-                  currentPlayingAudio="{{currentPlayingAudio}}"
-                  bind:imagePreview="previewImage"
-                  bind:audioPlay="playAudio"
-                />
-              </block>
-              
-              <!-- 为第一天的任务添加历史记录容器组件 -->
-              <block wx:if="{{expandedDay === 1}}">
-                <!-- 任务1（使用原有记录） -->
-                <block wx:if="{{index === 0}}">
-                  <history-container 
-                    wx:if="{{textInputHistory.length > 0 || imageInputHistory.length > 0 || audioInputHistory.length > 0}}"
-                    title="打卡历史记录"
-                    mixedRecords="{{combinedHistory}}"
-                    currentPlayingAudio="{{currentPlayingAudio}}"
-                    bind:imagePreview="previewImage"
-                    bind:audioPlay="playAudio"
-                  />
-                </block>
-                
-                <!-- 任务2（显示任务2的历史记录） -->
-                <block wx:if="{{index === 1}}">
-                  <history-container 
-                    title="打卡历史记录"
-                    mixedRecords="{{task2History}}"
-                    currentPlayingAudio="{{currentPlayingAudio}}"
-                    bind:imagePreview="previewImage"
-                    bind:audioPlay="playAudio"
-                    emptyText="暂无打卡记录"
-                  />
-                </block>
-                
-                <!-- 任务3（显示任务3的历史记录） -->
-                <block wx:if="{{index === 2}}">
-                  <history-container 
-                    title="打卡历史记录"
-                    mixedRecords="{{task3History}}"
-                    currentPlayingAudio="{{currentPlayingAudio}}"
-                    bind:imagePreview="previewImage"
-                    bind:audioPlay="playAudio"
-                    emptyText="暂无打卡记录"
-                  />
-                </block>
-              </block>
+              <!-- 打卡历史记录 -->
+              <view class="records-container" wx:if="{{isDayUnlocked(expandedDay) || unlockModeStates[expandedDay]}}">
+                <view class="records-header" bindtap="toggleRecords" data-day="{{expandedDay}}" data-task-title="{{item.title}}">
+                  <text class="records-title">打卡历史记录</text>
+                  <text class="records-arrow {{expandedRecords['day' + expandedDay + '_' + item.title] ? 'expanded' : ''}}">▼</text>
+                </view>
+                <view class="records-list {{expandedRecords['day' + expandedDay + '_' + item.title] ? 'expanded' : ''}}">
+                  <view wx:if="{{item.records && item.records.length > 0}}">
+                    <view 
+                      wx:for="{{item.records}}" 
+                      wx:for-item="record"
+                      wx:key="timestamp"
+                      class="record-item record-{{record.method}}"
+                    >
+                      <view class="record-header">
+                        <text class="record-type">{{record.method === 'text' ? '文字' : record.method === 'image' ? '图片' : '语音'}}</text>
+                        <text class="record-time">{{record.timeFormatted}}</text>
+                      </view>
+                      <view class="record-content">
+                        <text wx:if="{{record.method === 'text'}}" class="record-text">{{record.content}}</text>
+                        <view wx:elif="{{record.method === 'image'}}" class="image-preview-box" bindtap="previewImage" data-img-src="{{record.content}}">
+                          <image class="thumbnail-image" src="{{record.content}}" mode="aspectFill"></image>
+                          <text class="image-hint">点击查看大图</text>
+                        </view>
+                        <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio-src="{{record.content}}">
+                          <text class="audio-icon">🔊</text>
+                          <text class="audio-text">播放语音</text>
+                        </view>
+                      </view>
+                    </view>
+                  </view>
+                  <view wx:else class="no-records">
+                    <text>暂无打卡记录</text>
+                  </view>
+                </view>
+              </view>
               
               <!-- 快速打卡按钮区域 -->
               <view class="quick-checkin-buttons" wx:if="{{(isDayUnlocked(expandedDay) || expandedDay === 1 || unlockModeStates[expandedDay]) && !isTaskCompleted(expandedDay, index)}}">
@@ -174,33 +162,6 @@
                       tomatoTimeLeft === 5 ? '恭喜完成' : '暂停'}}
                   </text>
                 </view>
-              </view>
-              
-              <!-- 打卡记录列表 -->
-              <view class="records-list" wx:if="{{item.records && item.records.length > 0 && (isDayUnlocked(expandedDay) || unlockModeStates[expandedDay])}}">
-                <view 
-                  wx:for="{{item.records}}" 
-                  wx:for-item="record"
-                  wx:key="timestamp"
-                  class="record-item record-{{record.method}}"
-                >
-                  <view class="record-time">{{record.timeFormatted}}</view>
-                  <view class="record-content">
-                    <text wx:if="{{record.method === 'text'}}" class="record-text">{{record.content}}</text>
-                    <image wx:elif="{{record.method === 'image'}}" class="record-image" src="{{record.content}}" mode="aspectFill"></image>
-                    <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio-src="{{record.content}}">
-                      <text class="audio-icon">🔊</text>
-                      <text class="audio-text">播放</text>
-                    </view>
-                  </view>
-                </view>
-              </view>
-            </view>
-            
-            <!-- 已完成标签 -->
-            <view class="completion-status">
-              <view class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title) || unlockModeStates[expandedDay]}}">
-                <text>已完成</text>
               </view>
             </view>
           </view>
