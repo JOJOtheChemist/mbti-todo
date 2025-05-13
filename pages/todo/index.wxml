@@ -100,7 +100,10 @@
               <!-- 打卡历史记录 -->
               <view class="records-container" wx:if="{{isDayUnlocked(expandedDay) || unlockModeStates[expandedDay]}}">
                 <view class="records-header" bindtap="toggleRecords" data-day="{{expandedDay}}" data-task-title="{{item.title}}">
-                  <text class="records-title">打卡历史记录</text>
+                  <view class="records-title-wrapper">
+                    <text class="records-title">打卡历史记录</text>
+                    <text class="records-count" wx:if="{{item.records && item.records.length > 0}}">({{item.records.length}})</text>
+                  </view>
                   <text class="records-arrow {{expandedRecords['day' + expandedDay + '_' + item.title] ? 'expanded' : ''}}">▼</text>
                 </view>
                 <view class="records-list {{expandedRecords['day' + expandedDay + '_' + item.title] ? 'expanded' : ''}}">
@@ -112,7 +115,7 @@
                       class="record-item record-{{record.method}}"
                     >
                       <view class="record-header">
-                        <text class="record-type">{{record.method === 'text' ? '文字' : record.method === 'image' ? '图片' : '语音'}}</text>
+                        <text class="record-type">{{record.method === 'text' ? '文字' : record.method === 'image' ? '图片' : record.method === 'tomato' ? '番茄' : '语音'}}</text>
                         <text class="record-time">{{record.timeFormatted}}</text>
                       </view>
                       <view class="record-content">
@@ -154,13 +157,22 @@
               
               <!-- 番茄计时器遮罩层 -->
               <view class="tomato-overlay {{showTomatoTimer ? 'visible' : ''}}" bindtap="toggleTomatoTimer">
-                <view class="tomato-circle {{!isTomatoRunning && isTomatoStarted && tomatoTimeLeft === 5 ? 'completed' : ''}}">
-                  <text class="tomato-countdown" wx:if="{{!(isTomatoStarted && !isTomatoRunning && tomatoTimeLeft === 5)}}">{{tomatoTimeLeft}}</text>
-                  <text class="tomato-text">
-                    {{!isTomatoStarted ? '开始' : 
-                      isTomatoRunning ? '专注中' : 
-                      tomatoTimeLeft === 5 ? '恭喜完成' : '暂停'}}
-                  </text>
+                <view class="tomato-circle {{tomatoTimeLeft === 0 ? 'completed' : ''}}">
+                  <block wx:if="{{!isTomatoStarted}}">
+                    <view class="tomato-countdown">5</view>
+                    <view class="tomato-text">点击开始</view>
+                  </block>
+                  <block wx:elif="{{isTomatoRunning}}">
+                    <view class="tomato-countdown">{{tomatoTimeLeft}}</view>
+                    <view class="tomato-text">点击暂停</view>
+                  </block>
+                  <block wx:elif="{{tomatoTimeLeft < 5}}">
+                    <view class="tomato-countdown">{{tomatoTimeLeft}}</view>
+                    <view class="tomato-text">点击继续</view>
+                  </block>
+                  <block wx:else>
+                    <view class="tomato-text">恭喜完成！</view>
+                  </block>
                 </view>
               </view>
             </view>

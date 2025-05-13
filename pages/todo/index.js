@@ -1012,7 +1012,8 @@ Page({
       showTomatoTimer: true,
       isTomatoRunning: false,
       isTomatoStarted: false,
-      tomatoTimeLeft: 5
+      tomatoTimeLeft: 5,
+      activeTask: task // 保存当前任务信息
     });
   },
 
@@ -1067,11 +1068,81 @@ Page({
       });
       this.startCountdown();
     } else {
-      // 如果计时结束，则关闭遮罩层
+      // 如果计时结束，则关闭遮罩层并记录番茄打卡
+      const now = new Date();
+      const timestamp = now.getTime();
+      const formattedTime = this.formatTime(now);
+      
+      // 创建番茄打卡记录
+      const newRecord = {
+        taskTitle: this.data.activeTask.title,
+        method: 'tomato',
+        content: '番茄打卡完成',
+        timestamp: timestamp,
+        timeFormatted: formattedTime
+      };
+      
+      // 更新记录列表
+      const taskKey = `day${this.data.expandedDay}_${this.data.activeTask.title}`;
+      const checkinRecords = { ...this.data.checkinRecords };
+      if (!checkinRecords[taskKey]) {
+        checkinRecords[taskKey] = [];
+      }
+      
+      // 添加新记录到记录列表 - 始终放在数组最前面
+      checkinRecords[taskKey].unshift(newRecord);
+      
+      // 更新完成状态
+      const newDaysCompleted = { ...this.data.daysCompleted };
+      if (!newDaysCompleted[this.data.expandedDay]) {
+        newDaysCompleted[this.data.expandedDay] = [];
+      }
+      
+      if (newDaysCompleted[this.data.expandedDay].findIndex(t => t.taskTitle === this.data.activeTask.title) === -1) {
+        newDaysCompleted[this.data.expandedDay].push({
+          taskTitle: this.data.activeTask.title,
+          method: 'tomato',
+          content: '番茄打卡完成',
+          timestamp: timestamp
+        });
+      }
+
+      // 更新当前任务列表中的记录
+      const updatedDayTasks = this.data.dayTasks.map(task => {
+        if (task.title === this.data.activeTask.title) {
+          return {
+            ...task,
+            records: checkinRecords[taskKey] || []
+          };
+        }
+        return task;
+      });
+      
+      // 更新数据
       this.setData({
         showTomatoTimer: false,
         tomatoTimeLeft: 5,
-        isTomatoStarted: false
+        isTomatoStarted: false,
+        isTomatoRunning: false,
+        checkinRecords: checkinRecords,
+        daysCompleted: newDaysCompleted,
+        dayTasks: updatedDayTasks
+      });
+      
+      // 保存到本地存储
+      wx.setStorage({
+        key: 'checkinRecords',
+        data: JSON.stringify(checkinRecords)
+      });
+      
+      wx.setStorage({
+        key: 'daysCompleted',
+        data: JSON.stringify(newDaysCompleted)
+      });
+      
+      wx.showToast({
+        title: '番茄打卡完成！',
+        icon: 'success'
       });
     }
   },

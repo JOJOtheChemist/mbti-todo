@@ -436,8 +436,8 @@
 
 /* 打卡按钮区域 */
 .quick-checkin-buttons {
-  margin-top: 10rpx;
-  padding: 10rpx;
+  margin-top: 8rpx;
+  padding: 8rpx;
 }
 
 /* 圆角矩形按钮 */
@@ -445,7 +445,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100rpx;
+  height: 80rpx;
   border-radius: 12rpx;
   background: #f5f5f5;
   transition: all 0.3s ease;
@@ -482,7 +482,7 @@
 }
 
 .btn-label {
-  font-size: 26rpx;
+  font-size: 24rpx;
   font-weight: 500;
 }
 
@@ -1380,7 +1380,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 12rpx;
+  gap: 8rpx;
   width: 100%;
 }
 
@@ -1388,7 +1388,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100rpx;
+  height: 80rpx;
   border-radius: 12rpx;
   background: #f5f5f5;
   transition: all 0.3s ease;
@@ -1425,7 +1425,7 @@
 }
 
 .btn-label {
-  font-size: 26rpx;
+  font-size: 24rpx;
   font-weight: 500;
 }
 
@@ -1506,9 +1506,9 @@
 
 /* 历史记录容器样式 */
 .records-container {
-  margin-top: 20rpx;
+  margin-top: 16rpx;
   background: #f8f8f8;
-  border-radius: 12rpx;
+  border-radius: 8rpx;
   border: 1px solid #eee;
   overflow: hidden;
 }
@@ -1517,25 +1517,43 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx;
+  padding: 12rpx 16rpx;
   background: #f0f0f0;
   cursor: pointer;
 }
 
+.records-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  height: 24rpx;
+  line-height: 24rpx;
+}
+
 .records-title {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #333;
-  font-weight: 500;
+  font-weight: normal;
+  line-height: 24rpx;
+}
+
+.records-count {
+  font-size: 24rpx;
+  color: #666;
+  background: #e0e0e0;
+  padding: 0 8rpx;
+  border-radius: 8rpx;
+  line-height: 24rpx;
+  height: 24rpx;
+  display: inline-flex;
+  align-items: center;
 }
 
 .records-arrow {
-  font-size: 24rpx;
+  font-size: 20rpx;
   color: #666;
   transition: transform 0.3s ease;
-}
-
-.records-arrow.expanded {
-  transform: rotate(180deg);
+  margin-left: 12rpx;
 }
 
 .records-list {
@@ -1545,14 +1563,14 @@
 }
 
 .records-list.expanded {
-  max-height: 400rpx;
+  max-height: 300rpx;
   overflow-y: auto;
 }
 
 .record-item {
   background: #fff;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  margin: 20rpx;
+  border-radius: 8rpx;
+  padding: 16rpx;
+  margin: 12rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 } 
