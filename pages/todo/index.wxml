@@ -145,14 +145,19 @@
               
               <!-- 快速打卡按钮区域 -->
               <view class="quick-checkin-buttons" wx:if="{{(isDayUnlocked(expandedDay) || expandedDay === 1 || unlockModeStates[expandedDay]) && !isTaskCompleted(expandedDay, index)}}">
-                <view class="checkin-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
-                  <text class="btn-label">文字打卡</text>
-                </view>
-                <view class="checkin-btn image-btn" bindtap="openImageCheckin" data-task="{{item}}">
-                  <text class="btn-label">图片打卡</text>
-                </view>
-                <view class="checkin-btn audio-btn {{isRecording ? 'recording' : ''}}" bindtap="openAudioCheckin" data-task="{{item}}">
-                  <text class="btn-label">语音打卡</text>
+                <view class="checkin-grid">
+                  <view class="checkin-btn tomato-btn">
+                    <text class="btn-label">番茄打卡</text>
+                  </view>
+                  <view class="checkin-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
+                    <text class="btn-label">文字打卡</text>
+                  </view>
+                  <view class="checkin-btn image-btn" bindtap="openImageCheckin" data-task="{{item}}">
+                    <text class="btn-label">图片打卡</text>
+                  </view>
+                  <view class="checkin-btn audio-btn {{isRecording ? 'recording' : ''}}" bindtap="openAudioCheckin" data-task="{{item}}">
+                    <text class="btn-label">语音打卡</text>
+                  </view>
                 </view>
               </view>
               
