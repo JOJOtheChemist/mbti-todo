@@ -1,31 +1,49 @@
-<view class="task-card {{isCompleted ? 'completed' : ''}} {{!isUnlocked ? 'locked-mode' : ''}}">
-  <view class="task-header">
-    <view class="task-title">{{task.title}}</view>
-    <view class="task-category">{{task.type}} · {{task.difficulty}}</view>
+<view class="task-item {{isCompleted ? 'completed' : ''}} {{isLocked ? 'locked-mode' : ''}}">
+  <view class="task-content">
+    <view class="task-header">
+      <view class="task-title">{{task.title}}</view>
+      <view class="task-category">{{task.type}} · {{task.difficulty}}</view>
+    </view>
+    <view class="task-reason">为什么：{{task.reason}}</view>
+    <view class="task-status" wx:if="{{true}}" style="font-size: 22rpx; color: #999; margin-top: 6rpx;">状态: {{isLocked ? '锁定' : '已解锁'}}</view>
+    
+    <!-- 打卡按钮区域 -->
+    <view class="quick-checkin-btns" wx:if="{{!isLocked}}">
+      <view class="checkin-btn text-btn" bindtap="onTextCheckin">
+        <text class="btn-label">文字打卡</text>
+      </view>
+      <view class="checkin-btn image-btn" bindtap="onImageCheckin">
+        <text class="btn-label">图片打卡</text>
+      </view>
+      <view class="checkin-btn audio-btn" bindtap="onAudioCheckin">
+        <text class="btn-label">语音打卡</text>
+      </view>
+    </view>
+    
+    <!-- 任务打卡记录列表 -->
+    <slot name="history-container"></slot>
+    
+    <!-- 未解锁状态提示 -->
+    <view class="locked-hint" wx:if="{{isLocked}}">
+      <!-- 未解锁状态下的打卡容器 -->
+      <view class="locked-checkin-btns">
+        <view class="locked-checkin-btn">
+          <text>文字打卡</text>
+        </view>
+        <view class="locked-checkin-btn">
+          <text>图片打卡</text>
+        </view>
+        <view class="locked-checkin-btn">
+          <text>语音打卡</text>
+        </view>
+      </view>
+      <text class="locked-text">未解锁</text>
+    </view>
   </view>
-  <view class="task-reason">为什么：{{task.reason}}</view>
-
-  <!-- 历史记录组件 -->
-  <history-container 
-    title="打卡历史记录"
-    mixedRecords="{{history}}"
-    currentPlayingAudio="{{currentPlayingAudio}}"
-    bind:imagePreview="onImagePreview"
-    bind:audioPlay="onAudioPlay"
-    emptyText="暂无打卡记录"
-  />
-
-  <!-- 打卡按钮组件 -->
-  <checkin-buttons 
-    isUnlocked="{{isUnlocked}}"
-    isRecording="{{isRecording}}"
-    task="{{task}}"
-    bind:checkin="onCheckin"
-  />
-
+  
   <!-- 已完成标志 -->
   <view class="completion-status">
-    <view class="completed-tag" wx:if="{{isCompleted && isUnlocked}}">
+    <view class="completed-tag" wx:if="{{isCompleted && !isLocked}}">
       <text>已完成</text>
     </view>
   </view>

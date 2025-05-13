@@ -1069,4 +1069,51 @@ Page({
     // 按时间戳降序排序（最新的在前面）
     return allRecords.sort((a, b) => b.timestamp - a.timestamp);
   },
+  
+  // 解锁第2天
+  unlockDay2() {
+    // 更新当前天数和查看天数
+    const dayTasks = this.data.allDayTasks[1]; // 获取第2天任务
+    
+    this.setData({
+      currentDay: 2,
+      expandedDay: 2,
+      dayTasks: dayTasks
+    });
+    
+    // 保存到本地存储
+    wx.setStorage({
+      key: 'mbtiData',
+      data: {
+        mbtiType: this.data.mbtiType,
+        startDate: this.data.startDate,
+        currentDay: 2,
+        tasks: this.data.tasks
+      }
+    });
+    
+    // 显示成功消息
+    wx.showToast({
+      title: '第2天已解锁',
+      icon: 'success',
+      duration: 1500,
+      success: () => {
+        // 延迟后再次设置expandedDay，确保视图更新
+        setTimeout(() => {
+          if (this.data.expandedDay !== 2) {
+            this.setData({
+              expandedDay: 2,
+              dayTasks: dayTasks
+            });
+          }
+        }, 200);
+      }
+    });
+  },
+  
+  // 处理任务打卡事件
+  handleTaskCheckin(e) {
+    const { task, method } = e.detail;
+    this.addCheckinRecord(task, method);
+  },
 }) 
