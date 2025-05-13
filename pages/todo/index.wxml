@@ -90,6 +90,9 @@
                 <view class="task-category">{{item.type}} · {{item.difficulty}}</view>
               </view>
               <view class="task-reason">为什么：{{item.reason}}</view>
+              <view class="task-locked-status" wx:if="{{!isDayUnlocked(expandedDay) && !unlockModeStates[expandedDay]}}">
+                <text>完成前一天所有任务可解锁</text>
+              </view>
               
               <!-- 解锁模式下显示当天的内容 -->
               <block wx:if="{{unlockModeStates[expandedDay] && !isDayUnlocked(expandedDay) && expandedDay !== 1}}">
