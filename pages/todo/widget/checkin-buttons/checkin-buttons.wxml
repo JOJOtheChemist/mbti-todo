@@ -1,0 +1,28 @@
+<!-- 打卡按钮组件 -->
+<view class="quick-checkin-btns" wx:if="{{isUnlocked}}">
+  <view class="checkin-btn text-btn" bindtap="onTextCheckin">
+    <text class="btn-label">文字打卡</text>
+  </view>
+  <view class="checkin-btn image-btn" bindtap="onImageCheckin">
+    <text class="btn-label">图片打卡</text>
+  </view>
+  <view class="checkin-btn audio-btn {{isRecording ? 'recording' : ''}}" bindtap="onAudioCheckin">
+    <text class="btn-label">语音打卡</text>
+  </view>
+</view>
+
+<!-- 未解锁状态显示灰色按钮 -->
+<view class="locked-hint" wx:if="{{!isUnlocked}}">
+  <view class="locked-checkin-btns">
+    <view class="locked-checkin-btn" bindtap="onTextCheckin">
+      <text>文字打卡</text>
+    </view>
+    <view class="locked-checkin-btn" bindtap="onImageCheckin">
+      <text>图片打卡</text>
+    </view>
+    <view class="locked-checkin-btn" bindtap="onAudioCheckin">
+      <text>语音打卡</text>
+    </view>
+  </view>
+  <text class="locked-text">未解锁</text>
+</view> 

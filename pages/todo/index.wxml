@@ -1,0 +1,252 @@
+<view class="container">
+  <view class="header">
+    <view class="mbti-info">
+      <text class="mbti-label">MBTI类型：</text>
+      <text class="mbti-value">{{mbtiType}}</text>
+      <text class="retest-btn" bindtap="retakeTest">重测</text>
+    </view>
+    
+    <!-- 数据统计区域 -->
+    <view class="statistics-card">
+      <view class="stat-item">
+        <text class="stat-value">{{getCompletedDaysCount()}}</text>
+        <text class="stat-label">已完成天数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{getCompletedTasksCount()}}</text>
+        <text class="stat-label">已完成任务</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{getMediaUploadsCount('image')}}</text>
+        <text class="stat-label">图片上传</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{getMediaUploadsCount('audio')}}</text>
+        <text class="stat-label">语音记录</text>
+      </view>
+      <view class="stats-more" bindtap="viewDetailedStats">
+        <text>详细数据</text>
+        <text class="arrow">→</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 日期导航使用左右箭头 -->
+  <view class="days-nav-container">
+    <view class="day-arrow {{expandedDay === 1 ? 'disabled' : ''}}" bindtap="navigatePrevDay">
+      <text class="arrow-icon">←</text>
+    </view>
+    
+    <view class="days-nav">
+      <view 
+        wx:for="{{7}}" 
+        wx:key="*this"
+        class="day-item {{expandedDay === index + 1 ? 'active' : ''}} {{!isDayUnlocked(index + 1) ? 'locked' : ''}}"
+        bindtap="handleDayTap"
+        data-day="{{index + 1}}"
+      >
+        <text class="day-text">第{{index + 1}}天</text>
+        <view class="day-indicator {{isDayCompleted(index + 1) ? 'completed' : ''}}"></view>
+      </view>
+    </view>
+    
+    <view class="day-arrow {{expandedDay === 7 ? 'disabled' : ''}}" bindtap="navigateNextDay">
+      <text class="arrow-icon">→</text>
+    </view>
+  </view>
+
+  <!-- 解锁状态按钮 -->
+  <view class="unlock-button" bindtap="toggleUnlockMode">
+    <text>{{unlockModeStates[expandedDay] ? '已解锁' : '未解锁'}}</text>
+  </view>
+  
+  <!-- 滑动容器 - 绑定触摸事件 -->
+  <view 
+    class="tasks-container" 
+    bindtouchstart="handleTouchStart"
+    bindtouchend="handleTouchEnd"
+  >
+    <!-- 水平滑动视图 -->
+    <view class="days-slider">
+      <!-- 当前日显示 -->
+      <view class="day-content">
+        <view class="day-header">
+          <text class="day-title">第{{expandedDay}}天任务</text>
+          <text class="day-status {{!isDayUnlocked(expandedDay) ? 'locked-status' : ''}}">
+            {{getDayStatusText(expandedDay)}}
+          </text>
+        </view>
+        
+        <view class="task-list">
+          <view 
+            wx:for="{{dayTasks}}" 
+            wx:key="title"
+            class="task-item {{!isDayUnlocked(expandedDay) && !unlockModeStates[expandedDay] ? 'locked' : ''}} {{isTaskCompleted(expandedDay, item.title) ? 'completed' : ''}}"
+            bindtap="handleTaskTap" data-day="{{expandedDay}}" data-index="{{index}}"
+          >
+            <view class="task-content">
+              <view class="task-header">
+                <view class="task-title">{{item.title}}</view>
+                <view class="task-category">{{item.type}} · {{item.difficulty}}</view>
+              </view>
+              <view class="task-reason">为什么：{{item.reason}}</view>
+              
+              <!-- 解锁模式下显示当天的内容 -->
+              <block wx:if="{{unlockModeStates[expandedDay] && !isDayUnlocked(expandedDay) && expandedDay !== 1}}">
+                <!-- 显示当天的历史记录 -->
+                <history-container 
+                  wx:if="{{textInputHistory.length > 0 || imageInputHistory.length > 0 || audioInputHistory.length > 0}}"
+                  title="打卡历史记录"
+                  mixedRecords="{{combinedHistory}}"
+                  currentPlayingAudio="{{currentPlayingAudio}}"
+                  bind:imagePreview="previewImage"
+                  bind:audioPlay="playAudio"
+                />
+              </block>
+              
+              <!-- 为第一天的任务添加历史记录容器组件 -->
+              <block wx:if="{{expandedDay === 1}}">
+                <!-- 任务1（使用原有记录） -->
+                <block wx:if="{{index === 0}}">
+                  <history-container 
+                    wx:if="{{textInputHistory.length > 0 || imageInputHistory.length > 0 || audioInputHistory.length > 0}}"
+                    title="打卡历史记录"
+                    mixedRecords="{{combinedHistory}}"
+                    currentPlayingAudio="{{currentPlayingAudio}}"
+                    bind:imagePreview="previewImage"
+                    bind:audioPlay="playAudio"
+                  />
+                </block>
+                
+                <!-- 任务2（显示任务2的历史记录） -->
+                <block wx:if="{{index === 1}}">
+                  <history-container 
+                    title="打卡历史记录"
+                    mixedRecords="{{task2History}}"
+                    currentPlayingAudio="{{currentPlayingAudio}}"
+                    bind:imagePreview="previewImage"
+                    bind:audioPlay="playAudio"
+                    emptyText="暂无打卡记录"
+                  />
+                </block>
+                
+                <!-- 任务3（显示任务3的历史记录） -->
+                <block wx:if="{{index === 2}}">
+                  <history-container 
+                    title="打卡历史记录"
+                    mixedRecords="{{task3History}}"
+                    currentPlayingAudio="{{currentPlayingAudio}}"
+                    bind:imagePreview="previewImage"
+                    bind:audioPlay="playAudio"
+                    emptyText="暂无打卡记录"
+                  />
+                </block>
+              </block>
+              
+              <!-- 快速打卡按钮区域 -->
+              <view class="quick-checkin-buttons" wx:if="{{(isDayUnlocked(expandedDay) || expandedDay === 1 || unlockModeStates[expandedDay]) && !isTaskCompleted(expandedDay, index)}}">
+                <view class="checkin-btn text-btn" bindtap="openTextCheckin" data-task="{{item}}">
+                  <text class="btn-label">文字打卡</text>
+                </view>
+                <view class="checkin-btn image-btn" bindtap="openImageCheckin" data-task="{{item}}">
+                  <text class="btn-label">图片打卡</text>
+                </view>
+                <view class="checkin-btn audio-btn {{isRecording ? 'recording' : ''}}" bindtap="openAudioCheckin" data-task="{{item}}">
+                  <text class="btn-label">语音打卡</text>
+                </view>
+              </view>
+              
+              <!-- 打卡记录列表 -->
+              <view class="records-list" wx:if="{{item.records && item.records.length > 0 && (isDayUnlocked(expandedDay) || unlockModeStates[expandedDay])}}">
+                <view 
+                  wx:for="{{item.records}}" 
+                  wx:for-item="record"
+                  wx:key="timestamp"
+                  class="record-item record-{{record.method}}"
+                >
+                  <view class="record-time">{{record.timeFormatted}}</view>
+                  <view class="record-content">
+                    <text wx:if="{{record.method === 'text'}}" class="record-text">{{record.content}}</text>
+                    <image wx:elif="{{record.method === 'image'}}" class="record-image" src="{{record.content}}" mode="aspectFill"></image>
+                    <view wx:elif="{{record.method === 'audio'}}" class="record-audio" bindtap="playAudio" data-audio-src="{{record.content}}">
+                      <text class="audio-icon">🔊</text>
+                      <text class="audio-text">播放</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 已完成标签 -->
+            <view class="completion-status">
+              <view class="completed-tag" wx:if="{{isTaskCompleted(expandedDay, item.title) || unlockModeStates[expandedDay]}}">
+                <text>已完成</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 查看总报告按钮 -->
+  <view class="report-button-area" wx:if="{{expandedDay === 7 || currentDay === 7}}">
+    <button class="view-report-btn" bindtap="viewTotalReport">查看总报告</button>
+    <button class="next-week-btn" bindtap="startNextWeek" wx:if="{{currentDay >= 7}}">下一个七天，我需要干什么？</button>
+  </view>
+  
+  <!-- 打卡模态框 -->
+  <view class="checkin-modal {{isCheckinModalVisible ? 'visible' : ''}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">{{activeCheckinMethod === 'text' ? '文字打卡' : activeCheckinMethod === 'image' ? '图片打卡' : '语音打卡'}}</text>
+        <view class="close-btn" bindtap="closeCheckinModal">×</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="task-info">
+          <text class="task-name">{{activeTask.title}}</text>
+        </view>
+        
+        <!-- 文字打卡 -->
+        <view class="checkin-form" wx:if="{{activeCheckinMethod === 'text'}}">
+          <textarea 
+            class="text-input" 
+            placeholder="分享你的完成感受..." 
+            bindinput="inputCheckinText"
+            value="{{checkinContent}}"
+          ></textarea>
+        </view>
+        
+        <!-- 图片打卡 -->
+        <view class="checkin-form" wx:if="{{activeCheckinMethod === 'image'}}">
+          <view class="image-upload" bindtap="chooseImage">
+            <image wx:if="{{checkinContent}}" src="{{checkinContent}}" mode="aspectFill" class="preview-image"></image>
+            <view wx:else class="upload-btn">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">上传图片</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 录音打卡 -->
+        <view class="checkin-form" wx:if="{{activeCheckinMethod === 'audio'}}">
+          <view class="audio-record">
+            <view wx:if="{{!checkinContent}}" class="record-btn {{isRecording ? 'recording' : ''}}" bindtouchstart="startRecording" bindtouchend="stopRecording">
+              <text class="record-icon">🎤</text>
+              <text class="record-text">{{isRecording ? '松开结束' : '按住录音'}}</text>
+            </view>
+            <view wx:else class="record-preview">
+              <text class="preview-text">录音已完成</text>
+              <view class="rerecord-btn" bindtap="startRecording">重新录制</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="submit-btn" bindtap="submitCheckin">完成打卡</button>
+      </view>
+    </view>
+  </view>
+</view> 

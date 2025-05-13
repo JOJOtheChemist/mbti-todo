@@ -1,0 +1,114 @@
+<view class="container">
+  <view class="header">
+    <view class="title-bar">
+      <view class="back-btn" bindtap="backToTasks">
+        <text class="back-icon">←</text>
+      </view>
+      <view class="title">数据分析与报告</view>
+    </view>
+    
+    <view class="user-info">
+      <view class="mbti-info">
+        <text class="mbti-label">MBTI类型：</text>
+        <text class="mbti-value">{{mbtiType}}</text>
+      </view>
+      <view class="date-range">
+        {{startDateFormatted}} - {{endDateFormatted}}
+      </view>
+    </view>
+    
+    <view class="tab-bar">
+      <view class="tab {{currentView === 'stats' ? 'active' : ''}}" bindtap="switchView" data-view="stats">
+        <text>统计数据</text>
+      </view>
+      <view class="tab {{currentView === 'report' ? 'active' : ''}}" bindtap="switchView" data-view="report">
+        <text>成长报告</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 统计数据视图 -->
+  <view class="stats-view" wx:if="{{currentView === 'stats'}}">
+    <view class="stats-summary">
+      <view class="stat-card">
+        <text class="stat-value">{{completedDays}}/7</text>
+        <text class="stat-label">已完成天数</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{completedTasks}}/21</text>
+        <text class="stat-label">已完成任务</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{completionRate}}%</text>
+        <text class="stat-label">完成率</text>
+      </view>
+    </view>
+    
+    <view class="stats-section">
+      <view class="section-title">每日任务完成情况</view>
+      <view class="days-chart">
+        <view class="chart-day" wx:for="{{daysData}}" wx:key="day">
+          <view class="day-bar-container">
+            <view class="day-bar" style="height: {{item.percentage}}%"></view>
+          </view>
+          <view class="day-label">第{{item.day}}天</view>
+          <view class="day-value">{{item.completed}}/{{item.total}}</view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="stats-section">
+      <view class="section-title">打卡方式分布</view>
+      <view class="checkin-distribution">
+        <view class="pie-chart">
+          <!-- 这里可以实现环形图，但小程序需要使用组件或canvas -->
+          <view class="placeholder-chart">打卡方式统计</view>
+        </view>
+        <view class="checkin-legend">
+          <view class="legend-item" wx:for="{{tasksByType}}" wx:key="type">
+            <view class="legend-color" style="background-color: {{item.color}}"></view>
+            <view class="legend-text">{{item.type}}: {{item.count}}次</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 成长报告视图 -->
+  <view class="report-view" wx:if="{{currentView === 'report'}}">
+    <view class="report-card">
+      <view class="report-title">七天训练总结</view>
+      <view class="report-content">
+        <view class="report-section">
+          <view class="section-subtitle">完成情况</view>
+          <view class="report-text">
+            您在过去的7天中共完成了 {{completedTasks}} 个任务，完成率为 {{completionRate}}%。
+            {{completedTasks >= 15 ? '您的表现很出色！' : completedTasks >= 10 ? '您的表现不错！' : '继续加油！'}}
+          </view>
+        </view>
+        
+        <view class="report-section">
+          <view class="section-subtitle">成长亮点</view>
+          <view class="report-text">
+            <view>• 您最喜欢使用的打卡方式是: {{favoriteCheckinMethod}}</view>
+            <view>• 您已经连续坚持了 {{completedDays}} 天的任务</view>
+            <view>• 您在第 {{mostProductiveDay}} 天完成任务最多</view>
+          </view>
+        </view>
+        
+        <view class="report-section">
+          <view class="section-subtitle">建议与展望</view>
+          <view class="report-text">
+            <view>• 继续保持每日打卡习惯，养成良好的自我提升意识</view>
+            <view>• 尝试多样化的任务打卡方式，丰富自己的成长记录</view>
+            <view>• 根据您的MBTI类型{{mbtiType}}，建议在下一阶段关注更多社交/思考/实践方面的任务</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="next-steps">
+      <button class="next-week-btn" bindtap="startNextWeek">下一个七天，我需要干什么？</button>
+    </view>
+  </view>
+</view> 

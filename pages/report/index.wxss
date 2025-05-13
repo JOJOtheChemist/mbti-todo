@@ -1,0 +1,111 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 40rpx;
+  box-sizing: border-box;
+  background-color: #F9F9F9;
+}
+
+.header {
+  margin-top: 40rpx;
+  margin-bottom: 60rpx;
+  text-align: center;
+}
+
+.title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.result-card {
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 40rpx;
+}
+
+.mbti-type {
+  font-size: 72rpx;
+  font-weight: bold;
+  color: #6E7BF2;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.mbti-description {
+  font-size: 32rpx;
+  color: #555;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.task-section {
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: 60rpx;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 30rpx;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-item {
+  border-bottom: 2rpx solid #F0F0F0;
+  padding: 30rpx 0;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.task-reason {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.action-buttons {
+  margin-top: 20rpx;
+}
+
+.start-btn {
+  background-color: #6E7BF2;
+  color: white;
+  font-size: 32rpx;
+  height: 90rpx;
+  border-radius: 45rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.retest-btn {
+  background-color: #F5F5F5;
+  color: #666;
+  font-size: 32rpx;
+  height: 90rpx;
+  border-radius: 45rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} 

@@ -1,0 +1,32 @@
+<view class="task-card {{isCompleted ? 'completed' : ''}} {{!isUnlocked ? 'locked-mode' : ''}}">
+  <view class="task-header">
+    <view class="task-title">{{task.title}}</view>
+    <view class="task-category">{{task.type}} · {{task.difficulty}}</view>
+  </view>
+  <view class="task-reason">为什么：{{task.reason}}</view>
+
+  <!-- 历史记录组件 -->
+  <history-container 
+    title="打卡历史记录"
+    mixedRecords="{{history}}"
+    currentPlayingAudio="{{currentPlayingAudio}}"
+    bind:imagePreview="onImagePreview"
+    bind:audioPlay="onAudioPlay"
+    emptyText="暂无打卡记录"
+  />
+
+  <!-- 打卡按钮组件 -->
+  <checkin-buttons 
+    isUnlocked="{{isUnlocked}}"
+    isRecording="{{isRecording}}"
+    task="{{task}}"
+    bind:checkin="onCheckin"
+  />
+
+  <!-- 已完成标志 -->
+  <view class="completion-status">
+    <view class="completed-tag" wx:if="{{isCompleted && isUnlocked}}">
+      <text>已完成</text>
+    </view>
+  </view>
+</view> 
